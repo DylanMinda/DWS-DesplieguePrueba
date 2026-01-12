@@ -1,0 +1,119 @@
+﻿@{
+    ViewData["Title"] = "Chat";
+    var category = ViewBag.Category as string;
+    // var conversations = ViewBag.Conversations as List<TuProyecto.Models.Conversation>;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/chat.css" />
+}
+
+<div class="chat-layout">
+    <!-- Sidebar con historial -->
+    <div class="chat-sidebar">
+        <div class="sidebar-header">
+            <h3>Conversaciones</h3>
+            <button class="new-chat-btn" onclick="startNewChat()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Nueva Conversación
+            </button>
+        </div>
+
+        <div class="conversations-list" id="conversationsList">
+            <!-- Las conversaciones se cargarán aquí dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Contenedor principal del chat -->
+    <div class="chat-main">
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="white" />
+                        <path d="M2 17L12 22L22 17M2 12L12 17L22 12" stroke="white" stroke-width="2" />
+                    </svg>
+                    <div>
+                        <h2>Asistente Médico IA</h2>
+                        <small id="chatCategory">@(string.IsNullOrEmpty(category) ? "Conversación general" : category)</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <div class="message-avatar">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <circle cx="12" cy="12" r="10" />
+                        </svg>
+                    </div>
+                    <div class="message-content">
+                        ¡Hola! Soy tu asistente de medicación. Estoy aquí para ayudarte con información sobre medicamentos, tratamientos y salud. ¿En qué puedo ayudarte hoy?
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(category))
+                {
+                    <div class="questions-container">
+                        <h3>Preguntas frecuentes:</h3>
+                        <div class="questions-grid" id="suggestedQuestions">
+                            @if (category == "medicamentos")
+                            {
+                                <div class="question-card" onclick="sendQuestion(this)">¿Cuál es la dosis recomendada de ibuprofeno?</div>
+                                <div class="question-card" onclick="sendQuestion(this)">¿Para qué sirve la amoxicilina?</div>
+                                <div class="question-card" onclick="sendQuestion(this)">¿Cuáles son los efectos secundarios del paracetamol?</div>
+                                <div class="question-card" onclick="sendQuestion(this)">¿Cómo debo almacenar mis medicamentos?</div>
+                            }
+                            else if (category == "interacciones")
+                            {
+                                <div class="question-card" onclick="sendQuestion(this)">¿Puedo tomar ibuprofeno con aspirina?</div>
+                                <div class="question-card" onclick="sendQuestion(this)">¿Qué medicamentos no debo mezclar con alcohol?</div>
+                                <div class="question-card" onclick="sendQuestion(this)">¿Los antibióticos interactúan con anticonceptivos?</div>
+                                <div class="question-card" onclick="sendQuestion(this)">¿Qué alimentos evitar con ciertos medicamentos?</div>
+                            }
+                            else if (category == "tratamientos")
+                            {
+                                <div class="question-card" onclick="sendQuestion(this)">¿Cuánto dura un tratamiento con antibióticos?</div>
+                                <div class="question-card" onclick="sendQuestion(this)">¿Qué hacer si olvido una dosis?</div>
+                                <div class="question-card" onclick="sendQuestion(this)">¿Cuándo puedo dejar un tratamiento?</div>
+                                <div class="question-card" onclick="sendQuestion(this)">¿Cómo seguir correctamente un tratamiento crónico?</div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="loading-indicator" id="loadingIndicator">
+                <span class="loading-dots">Escribiendo</span>
+            </div>
+
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <textarea id="messageInput" class="chat-input" placeholder="Escribe tu pregunta..." rows="1"></textarea>
+                    <div class="chat-actions">
+                        <button type="button" class="icon-btn" id="imageBtn" title="Adjuntar imagen">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" />
+                                <circle cx="8.5" cy="8.5" r="1.5" />
+                                <path d="M21 15L16 10L5 21" />
+                            </svg>
+                        </button>
+                        <button type="button" class="btn btn-primary" id="sendBtn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M2 21L23 12L2 3V10L17 12L2 14V21Z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <input type="file" id="imageInput" accept="image/*" style="display: none;">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/chat.js"></script>
+}

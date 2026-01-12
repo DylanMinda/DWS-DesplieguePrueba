@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Bienvenido";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/welcome.css" />
+}
+
+<div class="welcome-container">
+    <div class="welcome-header">
+        <h1>Asistente Inteligente de Medicación</h1>
+        <p>Tu compañero confiable para información sobre medicamentos, tratamientos y salud. Selecciona un tema para comenzar.</p>
+    </div>
+
+    <div class="categories-grid">
+        <a asp-action="Chat" asp-route-category="medicamentos" class="category-card">
+            <div class="category-icon">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4.5 5.5L19.5 5.5L19.5 18.5C19.5 19.6046 18.6046 20.5 17.5 20.5L6.5 20.5C5.39543 20.5 4.5 19.6046 4.5 18.5L4.5 5.5Z" stroke="white" stroke-width="2" />
+                    <path d="M8 9L16 9M8 13L16 13M8 17L12 17" stroke="white" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </div>
+            <h3>Información de Medicamentos</h3>
+            <p>Consulta sobre composición, indicaciones, dosis y efectos secundarios de medicamentos específicos</p>
+        </a>
+
+        <a asp-action="Chat" asp-route-category="interacciones" class="category-card">
+            <div class="category-icon">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="8" cy="8" r="3" stroke="white" stroke-width="2" />
+                    <circle cx="16" cy="16" r="3" stroke="white" stroke-width="2" />
+                    <path d="M10.5 10L13.5 14" stroke="white" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </div>
+            <h3>Interacciones Medicamentosas</h3>
+            <p>Verifica posibles interacciones entre medicamentos, alimentos y condiciones médicas</p>
+        </a>
+
+        <a asp-action="Chat" asp-route-category="tratamientos" class="category-card">
+            <div class="category-icon">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L12 22M2 12L22 12" stroke="white" stroke-width="2" stroke-linecap="round" />
+                    <circle cx="12" cy="12" r="8" stroke="white" stroke-width="2" />
+                </svg>
+            </div>
+            <h3>Tratamientos y Terapias</h3>
+            <p>Aprende sobre opciones de tratamiento, protocolos médicos y cuidados específicos</p>
+        </a>
+    </div>
+
+    <div class="questions-container">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a asp-action="Chat" asp-controller="Chat" class="btn btn-primary">
+                Comenzar Conversación Libre
+            </a>
+        }
+        else
+        {
+            <a asp-action="Login" asp-controller="Account" class="btn btn-primary">
+                Inicia sesión para comenzar
+            </a>
+        }
+    </div>
+</div>
