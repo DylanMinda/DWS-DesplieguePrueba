@@ -2,36 +2,41 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Capturar el puerto de Render (variable de entorno PORT)
+var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
+builder.WebHost.UseUrls($"http://*:{port}");
+
+// Configuración de Servicios
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => {
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
+        options.Cookie.Name = "MedIQ_Auth"; // Nombre de la cookie para tu app
     });
 
 var app = builder.Build();
 
-
-// Configure the HTTP request pipeline.
+// Pipeline de la aplicación
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
+// IMPORTANTE: En Render a veces HTTPS redirection da problemas si el certificado 
+// lo maneja su proxy. Si te da error de "Too many redirects", comenta la línea de abajo.
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 
+app.UseStaticFiles();
 app.UseRouting();
 
-app.UseAuthentication(); // Primero autentica
-app.UseAuthorization();  // Luego autoriza
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Chat}/{action=Welcome}/{id?}"); // Arranca en Welcome
+    pattern: "{controller=Chat}/{action=Welcome}/{id?}");
 
 app.Run();
