@@ -5,8 +5,6 @@ WORKDIR /src
 COPY ["DWS/DWS.csproj", "DWS/"]
 COPY ["MedIQ-API/MedIQ-API.csproj", "MedIQ-API/"]
 COPY ["MedIQ-Modelos/MedIQ-Modelos.csproj", "MedIQ-Modelos/"]
-COPY ["MedIQ-CRUD/MedIQ-CRUD.csproj", "MedIQ-CRUD/"]
-
 RUN dotnet restore "DWS/DWS.csproj"
 
 # Copiar todo el código y compilar
