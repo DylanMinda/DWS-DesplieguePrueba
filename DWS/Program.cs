@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using MedIQ_Modelos; // Asegúrate de que este namespace sea el correcto para tu AppDbContext
+using DWS.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
