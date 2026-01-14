@@ -13,12 +13,21 @@ builder.Services.AddControllersWithViews();
 
 // CONFIGURACIÓN DE LA BASE DE DATOS EN LA NUBE
 var connectionString = builder.Configuration.GetConnectionString("AppDbContext");
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("La cadena de conexión 'AppDbContext' no fue encontrada.");
+}
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("AppDbContext"),
-    npgsqlOptions => {
-        // Esto es obligatorio para la capa gratuita de Render
-        npgsqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+    options.UseNpgsql(connectionString, npgsqlOptions =>
+    {
+        npgsqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorCodesToAdd: null);
     }));
+
 // CONFIGURACIÓN DE AUTENTICACIÓN
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => {
