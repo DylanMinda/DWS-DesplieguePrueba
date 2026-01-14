@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MedIQ_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260114131609_InitialCreate")]
+    [Migration("20260114144835_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,7 +24,7 @@ namespace MedIQ_API.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("DWS.Models.ChatSession", b =>
+            modelBuilder.Entity("MedIQ_Modelos.ChatSession", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -47,7 +47,7 @@ namespace MedIQ_API.Migrations
                     b.ToTable("ChatSessions");
                 });
 
-            modelBuilder.Entity("DWS.Models.Mensaje", b =>
+            modelBuilder.Entity("MedIQ_Modelos.Mensaje", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -76,7 +76,7 @@ namespace MedIQ_API.Migrations
                     b.ToTable("Mensajes");
                 });
 
-            modelBuilder.Entity("DWS.Models.Usuario", b =>
+            modelBuilder.Entity("MedIQ_Modelos.Usuario", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

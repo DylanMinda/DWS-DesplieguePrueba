@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using DWS.Models;
+using MedIQ_Modelos;
 
     public class AppDbContext : DbContext
     {
@@ -12,9 +12,9 @@ using DWS.Models;
         {
         }
 
-        public DbSet<DWS.Models.ChatSession> ChatSessions { get; set; } = default!;
+        public DbSet<MedIQ_Modelos.ChatSession> ChatSessions { get; set; } = default!;
 
-        public DbSet<DWS.Models.Mensaje> Mensajes { get; set; } = default!;
+        public DbSet<MedIQ_Modelos.Mensaje> Mensajes { get; set; } = default!;
 
-        public DbSet<DWS.Models.Usuario> Usuarios { get; set; } = default!;
+        public DbSet<MedIQ_Modelos.Usuario> Usuarios { get; set; } = default!;
     }
