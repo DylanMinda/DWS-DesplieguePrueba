@@ -1,22 +1,22 @@
-# Etapa de compilación
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copiar todos los archivos .csproj para restaurar
+COPY ["DWS/DWS.csproj", "DWS/"]
+COPY ["MedIQ-API/MedIQ-API.csproj", "MedIQ-API/"]
+COPY ["MedIQ-Modelos/MedIQ-Modelos.csproj", "MedIQ-Modelos/"]
+COPY ["MedIQ-CRUD/MedIQ-CRUD.csproj", "MedIQ-CRUD/"]
+
+RUN dotnet restore "DWS/DWS.csproj"
+
+# Copiar todo el cÃ³digo y compilar
+COPY . .
+WORKDIR "/src/DWS"
+RUN dotnet publish "DWS.csproj" -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-
-# Copiar archivos y restaurar dependencias
-COPY *.csproj ./
-RUN dotnet restore
-
-# Copiar todo lo demás y publicar
-COPY . ./
-RUN dotnet publish -c Release -o out
-
-# Etapa de ejecución
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
-WORKDIR /app
-COPY --from=build /app/out .
-
-# Configurar el puerto para Render
-ENV ASPNETCORE_URLS=http://+:10000
+COPY --from=build /app/publish .
+ENV PORT=10000
 EXPOSE 10000
-
 ENTRYPOINT ["dotnet", "DWS.dll"]

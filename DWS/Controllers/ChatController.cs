@@ -64,5 +64,11 @@ namespace DWS.Controllers
 
             return Json(new { respuesta = result }); // n8n devuelve la transcripción o respuesta
         }
+
+        public IActionResult ProcesarImagen(string archivo)
+        {
+            ViewBag.NombreArchivo = archivo;
+            return View(); // Debes crear la vista ProcesarImagen.cshtml
+        }
     }
 }

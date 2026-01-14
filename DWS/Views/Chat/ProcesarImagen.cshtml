@@ -1,0 +1,156 @@
+﻿@{
+    ViewBag.Title = "Escáner OCR";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles {
+    <link href="~/Content/css/scanner.css" rel="stylesheet" />
+}
+
+<div class="scanner-container">
+    <div class="scanner-header">
+        <h1>Escáner OCR</h1>
+        <p>Extrae texto de imágenes y documentos escaneados</p>
+    </div>
+
+    <div class="scanner-grid">
+        <!-- Upload Section -->
+        <div class="scanner-sidebar">
+            <div class="upload-card">
+                <h3>Cargar Documento</h3>
+                <p class="card-description">Sube una imagen o PDF para extraer el texto</p>
+
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <p class="upload-text">Arrastra un archivo aquí</p>
+                    <p class="upload-subtext">o haz clic para seleccionar</p>
+                    <input type="file" id="fileInput" accept="image/*,.pdf" style="display: none;" />
+                </div>
+
+                <button type="button" class="btn btn-primary btn-block btn-upload" id="btnUpload">
+                    <i class="fas fa-upload"></i>
+                    Subir Archivo
+                </button>
+
+                <div class="divider">
+                    <span>o</span>
+                </div>
+
+                <button type="button" class="btn btn-outline btn-block btn-camera" disabled>
+                    <i class="fas fa-camera"></i>
+                    Usar Cámara
+                </button>
+
+                <div class="upload-info">
+                    <p class="info-title">Formatos soportados:</p>
+                    <ul>
+                        <li>JPG, PNG, WebP</li>
+                        <li>PDF (hasta 10MB)</li>
+                    </ul>
+                </div>
+
+                <!-- Loading indicator -->
+                <div class="scanning-overlay" id="scanningOverlay" style="display: none;">
+                    <div class="scanning-spinner">
+                        <i class="fas fa-circle-notch fa-spin"></i>
+                    </div>
+                    <p>Escaneando documento...</p>
+                </div>
+            </div>
+
+            <!-- Stats Card -->
+            <div class="stats-card">
+                <h4>Estadísticas</h4>
+                <div class="stat-row">
+                    <span class="stat-label">Documentos escaneados</span>
+                    <span class="stat-value">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Tasa de éxito</span>
+                    <span class="stat-value">0%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Confianza promedio</span>
+                    <span class="stat-value">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="scanner-main">
+            <div class="results-card">
+                <div class="results-header">
+                    <div class="results-title">
+                        <h3>Resultados</h3>
+                        <p>Texto extraído del documento</p>
+                    </div>
+                    <div class="results-actions" id="resultsActions" style="display: none;">
+                        <button type="button" class="btn btn-sm btn-outline" id="btnCopy">
+                            <i class="fas fa-copy"></i>
+                            Copiar
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline" id="btnDownload">
+                            <i class="fas fa-download"></i>
+                            Descargar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="results-tabs">
+                    <button class="tab-button active" data-tab="result">
+                        Texto Extraído
+                    </button>
+                    <button class="tab-button" data-tab="history">
+                        Historial
+                    </button>
+                </div>
+
+                <!-- Tab Content - Result -->
+                <div class="tab-content active" id="resultTab">
+                    <div class="empty-state" id="emptyState">
+                        <i class="fas fa-file-alt empty-icon"></i>
+                        <p class="empty-text">No hay documentos escaneados aún</p>
+                        <p class="empty-subtext">Sube un archivo para comenzar</p>
+                    </div>
+
+                    <div class="result-content" id="resultContent" style="display: none;">
+                        <div class="result-info">
+                            <div class="result-file">
+                                <i class="fas fa-file-alt"></i>
+                                <span id="fileName">documento.pdf</span>
+                            </div>
+                            <div class="result-badges">
+                                <span class="badge badge-success">
+                                    <i class="fas fa-check-circle"></i>
+                                    Éxito
+                                </span>
+                                <span class="badge badge-info">
+                                    Confianza: <span id="confidence">95</span>%
+                                </span>
+                            </div>
+                        </div>
+                        <div class="text-output">
+                            <pre id="extractedText">El texto extraído aparecerá aquí...</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Content - History -->
+                <div class="tab-content" id="historyTab">
+                    <div class="history-empty" id="historyEmpty">
+                        <p>No hay documentos en el historial</p>
+                    </div>
+
+                    <div class="history-list" id="historyList">
+                        <!-- Los items se agregarán dinámicamente aquí -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/js/scanner.js"></script>
+}

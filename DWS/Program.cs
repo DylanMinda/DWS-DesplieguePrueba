@@ -27,7 +27,7 @@ if (!app.Environment.IsDevelopment())
 
 // IMPORTANTE: En Render a veces HTTPS redirection da problemas si el certificado 
 // lo maneja su proxy. Si te da error de "Too many redirects", comenta la línea de abajo.
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseRouting();

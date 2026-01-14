@@ -116,3 +116,23 @@ function sendQuestion(element) {
     const questionsContainer = element.closest('.questions-container');
     if (questionsContainer) questionsContainer.style.display = 'none';
 }
+
+document.getElementById('imageInput').addEventListener('change', function () {
+    if (this.files && this.files[0]) {
+        // Opción A: Redirigir pasando un parámetro (ej. el nombre del archivo)
+        const fileName = this.files[0].name;
+
+        // Redirigimos a una acción de tu controlador, por ejemplo "ProcesarImagen"
+        window.location.href = `/Chat/ProcesarImagen?archivo=${encodeURIComponent(fileName)}`;
+
+        /* Nota: Si necesitas enviar la imagen real a la otra ventana, 
+           lo mejor es subirla primero vía AJAX y que el servidor te devuelva 
+           la URL de la nueva página.
+        */
+    }
+});
+
+// Esto es para que el botón bonito active al input oculto
+document.getElementById('imageBtn').addEventListener('click', function () {
+    document.getElementById('imageInput').click();
+});

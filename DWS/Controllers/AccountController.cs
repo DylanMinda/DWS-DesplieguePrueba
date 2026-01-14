@@ -3,34 +3,47 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace DWS.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly AppDbContext _context;
+
+        public AccountController(AppDbContext context)
+        {
+            _context = context;
+        }
+
         [HttpGet]
         public IActionResult Login() => View();
 
         [HttpPost]
         public async Task<IActionResult> Login(string Email, string Password)
         {
-            // Simulación de validación (El de backend pondrá la consulta a Postgres aquí)
-            if (Email == "admin@admin.com" && Password == "123456")
+            // Buscar usuario en la base de datos de la nube
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.Email == Email && u.Contraseña == Password);
+
+            if (usuario != null)
             {
                 var claims = new List<Claim> {
-                    new Claim(ClaimTypes.Name, Email),
-                    new Claim(ClaimTypes.Email, Email)
-                };
+            new Claim(ClaimTypes.Name, usuario.Nombre),
+            new Claim(ClaimTypes.Email, usuario.Email),
+            new Claim("UsuarioId", usuario.Id.ToString())
+        };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity));
 
                 return RedirectToAction("Welcome", "Chat");
             }
 
-            ModelState.AddModelError("", "Correo o contraseña incorrectos.");
+            ModelState.AddModelError("", "Credenciales inválidas. Inténtalo de nuevo.");
             return View();
         }
 
@@ -38,10 +51,25 @@ namespace DWS.Controllers
         public IActionResult Register() => View();
 
         [HttpPost]
-        public IActionResult Register(Usuario usuario)
+        public async Task<IActionResult> Register(Usuario usuario)
         {
-            // Aquí el de backend guardará en Postgres
-            return RedirectToAction("Login");
+            if (ModelState.IsValid)
+            {
+                // Verificar si el correo ya existe
+                var existe = await _context.Usuarios.AnyAsync(u => u.Email == usuario.Email);
+                if (existe)
+                {
+                    ModelState.AddModelError("Email", "Este correo ya está registrado.");
+                    return View(usuario);
+                }
+
+                // Guardar en la nube
+                _context.Usuarios.Add(usuario);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Login");
+            }
+            return View(usuario);
         }
 
         [HttpPost]
