@@ -13,12 +13,12 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+// En Render, como el environment será "Production", esto se saltará automáticamente.
 
 app.UseHttpsRedirection();
 

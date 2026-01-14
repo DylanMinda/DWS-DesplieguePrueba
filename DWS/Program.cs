@@ -42,6 +42,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Chat}/{action=Welcome}/{id?}");
+    pattern: "{controller=Account}/{action=Login}/{id?}"); // Esto fuerza a que inicie en el Login
 
 app.Run();
