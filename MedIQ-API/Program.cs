@@ -2,8 +2,11 @@
 using Microsoft.Extensions.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("AppDbContext") ?? throw new InvalidOperationException("Connection string 'AppDbContext' not found.")));
-
+    options.UseNpgsql(builder.Configuration.GetConnectionString("AppDbContext"),
+    npgsqlOptions => {
+        // Esto es obligatorio para la capa gratuita de Render
+        npgsqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+    }));
 // Add services to the container.
 
 builder.Services.AddControllers();

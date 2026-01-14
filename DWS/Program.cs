@@ -14,8 +14,11 @@ builder.Services.AddControllersWithViews();
 // CONFIGURACIÓN DE LA BASE DE DATOS EN LA NUBE
 var connectionString = builder.Configuration.GetConnectionString("AppDbContext");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
-
+    options.UseNpgsql(builder.Configuration.GetConnectionString("AppDbContext"),
+    npgsqlOptions => {
+        // Esto es obligatorio para la capa gratuita de Render
+        npgsqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+    }));
 // CONFIGURACIÓN DE AUTENTICACIÓN
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => {
