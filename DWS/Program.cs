@@ -1,38 +1,42 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using MedIQ_Modelos; // Asegúrate de que este namespace sea el correcto para tu AppDbContext
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Capturar el puerto de Render (variable de entorno PORT)
+// --- 1. CONFIGURACIÓN DEL SERVIDOR (RENDER) ---
 var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
 builder.WebHost.UseUrls($"http://*:{port}");
 
-// Configuración de Servicios
+// --- 2. REGISTRO DE SERVICIOS (TODO ANTES DE builder.Build()) ---
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options => {
-        options.LoginPath = "/Account/Login";
-        options.LogoutPath = "/Account/Logout";
-        options.Cookie.Name = "MedIQ_Auth"; // Nombre de la cookie para tu app
-    });
-
-var app = builder.Build();
-
+// CONFIGURACIÓN DE LA BASE DE DATOS EN LA NUBE
 var connectionString = builder.Configuration.GetConnectionString("AppDbContext");
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// Pipeline de la aplicación
+// CONFIGURACIÓN DE AUTENTICACIÓN
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options => {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.Cookie.Name = "MedIQ_Auth";
+    });
+
+// --- 3. CONSTRUCCIÓN DE LA APLICACIÓN ---
+var app = builder.Build(); // <--- Ahora sí, todos los servicios están registrados
+
+// --- 4. CONFIGURACIÓN DEL PIPELINE (MIDDLEWARE) ---
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
-// IMPORTANTE: En Render a veces HTTPS redirection da problemas si el certificado 
-// lo maneja su proxy. Si te da error de "Too many redirects", comenta la línea de abajo.
-//app.UseHttpsRedirection();
+// Nota: En Render, el SSL lo maneja su propio Proxy. 
+// Si ves errores de redirección infinita, mantén esta línea comentada.
+// app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseRouting();
@@ -40,8 +44,9 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// RUTA POR DEFECTO: Inicia directamente en el Login del MVC
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=Login}/{id?}"); // Esto fuerza a que inicie en el Login
+    pattern: "{controller=Account}/{action=Login}/{id?}");
 
 app.Run();
