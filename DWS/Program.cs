@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using DWS.Models;
+using MedIQ_Modelos;
 
 var builder = WebApplication.CreateBuilder(args);
 

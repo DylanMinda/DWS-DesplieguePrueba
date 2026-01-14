@@ -1,4 +1,4 @@
-﻿using DWS.Models;
+﻿using MedIQ_Modelos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
