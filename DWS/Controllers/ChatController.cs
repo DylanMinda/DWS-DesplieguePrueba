@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
+using System.Text.Json;
 
 namespace DWS.Controllers
 {
@@ -31,38 +33,32 @@ namespace DWS.Controllers
         [Authorize]
         public async Task<IActionResult> SendMessage([FromBody] Mensaje mensaje)
         {
-            // Por ahora solo simulamos una respuesta para que pruebes tu frontend
-            var respuesta = new
-            {
-                texto = "Recibido. Como soy el frontend, aún no estoy conectado a n8n, pero tu mensaje fue: " + mensaje.Texto,
-                esIA = true
-            };
-
-            return Json(respuesta);
-        }
-        [HttpPost]
-        public async Task<IActionResult> EnviarAn8n(string mensaje, IFormFile imagen)
-        {
-            // URL que te da n8n al crear un "Webhook Node"
-            string n8nUrl = "https://tu-instancia-n8n.com/webhook/asistente-medico";
+            // Reemplaza con tu URL de n8n (usar variables de entorno en Render es lo ideal)
+            string n8nUrl = "http://localhost:5678/webhook-test/chat-mediq";
 
             using var client = new HttpClient();
-            using var content = new MultipartFormDataContent();
 
-            // Añadimos el texto
-            content.Add(new StringContent(mensaje ?? ""), "chatInput");
-
-            // Si hay imagen para OCR, la enviamos como archivo
-            if (imagen != null)
+            var payload = new
             {
-                var fileStream = imagen.OpenReadStream();
-                content.Add(new StreamContent(fileStream), "data", imagen.FileName);
+                chatInput = mensaje.Texto,
+                usuario = User.Identity.Name,
+                usuarioId = User.FindFirst("UsuarioId")?.Value
+            };
+
+            try
+            {
+                var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+
+                // Petición a n8n y espera de la respuesta de Gemini/Pinecone
+                var response = await client.PostAsync(n8nUrl, content);
+                var respuestaDelAgente = await response.Content.ReadAsStringAsync();
+
+                return Json(new { texto = respuestaDelAgente, esIA = true });
             }
-
-            var response = await client.PostAsync(n8nUrl, content);
-            var result = await response.Content.ReadAsStringAsync();
-
-            return Json(new { respuesta = result }); // n8n devuelve la transcripción o respuesta
+            catch (Exception ex)
+            {
+                return Json(new { texto = "Error de conexión con el agente: " + ex.Message, esIA = true });
+            }
         }
 
         public IActionResult ProcesarImagen(string archivo)
