@@ -11,6 +11,11 @@ namespace DWS.Controllers
     {
         private readonly IConfiguration _configuration;
 
+        public ChatController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         // Página de inicio (Bienvenida)
         public IActionResult Welcome()
         {
