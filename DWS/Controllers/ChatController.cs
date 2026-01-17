@@ -9,6 +9,8 @@ namespace DWS.Controllers
 {
     public class ChatController : Controller
     {
+        private readonly IConfiguration _configuration;
+
         // Página de inicio (Bienvenida)
         public IActionResult Welcome()
         {
@@ -33,23 +35,19 @@ namespace DWS.Controllers
         [Authorize]
         public async Task<IActionResult> SendMessage([FromBody] Mensaje mensaje)
         {
-            // Reemplaza con tu URL de n8n (usar variables de entorno en Render es lo ideal)
-            string n8nUrl = "http://localhost:5678/webhook-test/chat-mediq";
+            // Lee la URL desde las variables de entorno de Render
+            string n8nUrl = _configuration["N8N_CHAT_URL"];
 
             using var client = new HttpClient();
-
             var payload = new
             {
                 chatInput = mensaje.Texto,
-                usuario = User.Identity.Name,
-                usuarioId = User.FindFirst("UsuarioId")?.Value
+                usuario = User.Identity.Name
             };
 
             try
             {
                 var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
-
-                // Petición a n8n y espera de la respuesta de Gemini/Pinecone
                 var response = await client.PostAsync(n8nUrl, content);
                 var respuestaDelAgente = await response.Content.ReadAsStringAsync();
 
@@ -57,7 +55,7 @@ namespace DWS.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { texto = "Error de conexión con el agente: " + ex.Message, esIA = true });
+                return Json(new { texto = "Error de comunicación: " + ex.Message, esIA = true });
             }
         }
 
