@@ -11,36 +11,52 @@ namespace MedIQ_API.Controllers
     namespace MedIQ_API.Controllers
     {
         [ApiController]
-        [Route("api/[controller]")] // Esto hará que la URL sea: api/Chat
+        [Route("api/[controller]")]
         public class ChatController : ControllerBase
         {
-            // El código que pusiste va aquí adentro:
+            private readonly IConfiguration _configuration;
+
+            // Constructor para inyectar la configuración y leer N8N_CHAT_URL
+            public ChatController(IConfiguration configuration)
+            {
+                _configuration = configuration;
+            }
 
             [HttpPost("analizar-salud")]
             public async Task<IActionResult> PostToN8n(IFormFile imagen, string pregunta)
             {
-                // 1. La URL del Webhook de n8n (reemplaza con tu URL real de n8n)
-                var n8nWebhookUrl = "https://tu-n8n-en-la-nube.com/webhook/identificador";
+                // Usamos la variable que ya configuraste en Render
+                string n8nWebhookUrl = _configuration["N8N_CHAT_URL"];
+
+                if (string.IsNullOrEmpty(n8nWebhookUrl))
+                {
+                    return BadRequest("La URL de n8n no está configurada.");
+                }
 
                 using var client = new HttpClient();
                 using var content = new MultipartFormDataContent();
 
-                // Enviamos la imagen si existe
+                // Enviamos la imagen para el futuro procesamiento de OCR
                 if (imagen != null)
                 {
                     var fileStream = new StreamContent(imagen.OpenReadStream());
                     content.Add(fileStream, "archivo_medico", imagen.FileName);
                 }
 
-                // Enviamos la pregunta
-                content.Add(new StringContent(pregunta ?? ""), "pregunta_usuario");
+                // Importante: Cambia "pregunta_usuario" por "chatInput" 
+                // para que coincida con tu flujo de n8n actual
+                content.Add(new StringContent(pregunta ?? ""), "chatInput");
 
-                // 2. n8n recibe, procesa con IA y nos devuelve la respuesta
-                var response = await client.PostAsync(n8nWebhookUrl, content);
-                var jsonRespuesta = await response.Content.ReadAsStringAsync();
-
-                return Ok(jsonRespuesta);
+                try
+                {
+                    var response = await client.PostAsync(n8nWebhookUrl, content);
+                    var respuestaDelAgente = await response.Content.ReadAsStringAsync();
+                    return Ok(new { texto = respuestaDelAgente });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Error de conexión: {ex.Message}");
+                }
             }
         }
     }
-}
