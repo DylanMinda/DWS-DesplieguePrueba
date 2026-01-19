@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using BCrypt.Net;
 
 namespace DWS.Controllers
 {
@@ -30,26 +31,31 @@ namespace DWS.Controllers
                 return View();
             }
 
-            var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.Email == Email && u.Contraseña == Password);
+			Email = Email.Trim().ToLowerInvariant();
 
-            if (usuario != null)
-            {
-                var claims = new List<Claim> {
-                    new Claim(ClaimTypes.Name, usuario.Nombre),
-                    new Claim(ClaimTypes.Email, usuario.Email),
-                    new Claim("UsuarioId", usuario.Id.ToString())
-                };
+			var usuario = await _context.Usuarios
+				.FirstOrDefaultAsync(u => u.Email == Email);
 
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+			if (usuario != null && BCrypt.Net.BCrypt.Verify(Password, usuario.Contraseña))
+			{
+				var claims = new List<Claim>
+				{
+					new Claim(ClaimTypes.Name, usuario.Nombre),
+					new Claim(ClaimTypes.Email, usuario.Email),
+					new Claim("UsuarioId", usuario.Id.ToString())
+				};
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity));
+				var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                return RedirectToAction("Welcome", "Chat");
-            }
+				await HttpContext.SignInAsync(
+					CookieAuthenticationDefaults.AuthenticationScheme,
+					new ClaimsPrincipal(claimsIdentity)
+				);
 
-            ModelState.AddModelError("", "Credenciales inválidas. Inténtalo de nuevo.");
+				return RedirectToAction("Welcome", "Chat");
+			}
+
+			ModelState.AddModelError("", "Credenciales inválidas. Inténtalo de nuevo.");
             return View();
         }
 
@@ -65,7 +71,9 @@ namespace DWS.Controllers
             {
                 try
                 {
-                    _context.Usuarios.Add(usuario); // Especificamos la tabla Usuarios
+					usuario.Email = usuario.Email.Trim().ToLowerInvariant();
+					usuario.Contraseña = BCrypt.Net.BCrypt.HashPassword(usuario.Contraseña);
+					_context.Usuarios.Add(usuario); // Especificamos la tabla Usuarios
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Login");
                 }
