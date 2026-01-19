@@ -59,6 +59,6 @@ app.UseAuthorization();
 // RUTA POR DEFECTO: Inicia directamente en el Login del MVC
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=Login}/{id?}");
+    pattern: "{controller=Home}/{action=Welcome}/{id?}");
 
 app.Run();

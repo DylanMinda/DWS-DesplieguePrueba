@@ -19,8 +19,6 @@
                 MedIQ
             </a>
             <ul class="navbar-menu">
-                <li><a asp-action="Welcome" asp-controller="Home" class="navbar-link">Inicio</a></li>
-
                 @if (User.Identity.IsAuthenticated)
                 {
                     <li><a asp-action="Chat" asp-controller="Chat" class="navbar-link">Chat</a></li>
@@ -29,11 +27,6 @@
                             <button type="submit" class="navbar-link" style="background:none; border:none; cursor:pointer;">Salir</button>
                         </form>
                     </li>
-                }
-                else
-                {
-                    <li><a asp-action="Login" asp-controller="Account" class="navbar-link">Iniciar Sesión</a></li>
-                    <li><a asp-action="Register" asp-controller="Account" class="navbar-link btn-register">Registrarse</a></li>
                 }
             </ul>
         </div>
