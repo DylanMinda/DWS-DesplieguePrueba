@@ -23,34 +23,24 @@
     }
 
     async function handleSend() {
-        const text = messageInput.value.trim();
-        if (!text) return;
+        if (response.ok) {
+            const data = await response.json();
 
-        // Mostrar mensaje del usuario
-        appendMessage(text, 'user');
+            // n8n envía un JSON dentro de otro JSON. 
+            // Debemos extraer solo la propiedad 'texto'
+            let respuestaFinal = data.texto;
 
-        // Limpiar input y mostrar carga
-        messageInput.value = '';
-        loadingIndicator.style.display = 'block';
-
-        try {
-            const response = await fetch('/Chat/SendMessage', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ texto: text })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                appendMessage(data.texto || "El agente no devolvió respuesta.", 'bot');
-            } else {
-                appendMessage("Error al conectar con el asistente.", 'bot');
+            // Si la respuesta viene como un string con formato JSON, lo limpiamos
+            if (typeof respuestaFinal === 'string' && respuestaFinal.startsWith('{')) {
+                try {
+                    const tempObj = JSON.parse(respuestaFinal);
+                    respuestaFinal = tempObj.texto;
+                } catch (e) {
+                    console.error("Error al parsear respuesta:", e);
+                }
             }
-        } catch (error) {
-            console.error("Error:", error);
-            appendMessage("Error de conexión.", 'bot');
-        } finally {
-            loadingIndicator.style.display = 'none';
+
+            appendMessage(respuestaFinal || "El asistente no devolvió respuesta.", 'bot');
         }
     }
 
