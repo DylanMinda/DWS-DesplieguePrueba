@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MedIQ_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260114144835_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260119213810_Final")]
+    partial class Final
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -93,6 +93,10 @@ namespace MedIQ_API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Rol")
                         .IsRequired()
                         .HasColumnType("text");
 

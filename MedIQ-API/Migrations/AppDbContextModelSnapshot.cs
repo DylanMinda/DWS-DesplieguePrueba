@@ -93,6 +93,10 @@ namespace MedIQ_API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Rol")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("Usuarios");
