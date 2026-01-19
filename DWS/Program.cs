@@ -69,6 +69,9 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<AppDbContext>();
+        // ⚠️ REINICIO DE DB: Borra tablas viejas incompatibles y crea las nuevas con Roles y Encriptación.
+        // Solo para este despliegue de corrección.
+        context.Database.EnsureDeleted(); 
         context.Database.Migrate(); 
     }
     catch (Exception ex)

@@ -69,6 +69,20 @@ namespace DWS.Controllers
             {
                 try
                 {
+                    // 1. Validar que el correo no exista ya
+                    if (await _context.Usuarios.AnyAsync(u => u.Email == usuario.Email))
+                    {
+                        ModelState.AddModelError("Email", "Este correo ya está registrado.");
+                        return View(usuario);
+                    }
+
+                    // 2. Validar complejidad de contraseña (Simple)
+                    if (!EsContraseñaSegura(usuario.Contraseña))
+                    {
+                        ModelState.AddModelError("Contraseña", "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número.");
+                        return View(usuario);
+                    }
+
                     // Encriptamos la contraseña antes de guardarla
                     usuario.Contraseña = HashPassword(usuario.Contraseña);
 
@@ -84,6 +98,16 @@ namespace DWS.Controllers
             }
 
             return View(usuario);
+        }
+
+        // Método simple para validar seguridad
+        private bool EsContraseñaSegura(string password)
+        {
+            if (string.IsNullOrEmpty(password)) return false;
+            if (password.Length < 8) return false; // Mínimo 8 caracteres
+            if (!password.Any(char.IsUpper)) return false; // Al menos una mayúscula
+            if (!password.Any(char.IsDigit)) return false; // Al menos un número
+            return true;
         }
 
         // Método helper para encriptar contraseñas (SHA256)
