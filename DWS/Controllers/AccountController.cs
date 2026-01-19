@@ -30,15 +30,19 @@ namespace DWS.Controllers
                 return View();
             }
 
+            // Encriptamos la contraseña ingresada para compararla con la de la BD
+            string passwordHash = HashPassword(Password);
+
             var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.Email == Email && u.Contraseña == Password);
+                .FirstOrDefaultAsync(u => u.Email == Email && u.Contraseña == passwordHash);
 
             if (usuario != null)
             {
                 var claims = new List<Claim> {
                     new Claim(ClaimTypes.Name, usuario.Nombre),
                     new Claim(ClaimTypes.Email, usuario.Email),
-                    new Claim("UsuarioId", usuario.Id.ToString())
+                    new Claim("UsuarioId", usuario.Id.ToString()),
+                    new Claim(ClaimTypes.Role, usuario.Rol)
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -65,6 +69,9 @@ namespace DWS.Controllers
             {
                 try
                 {
+                    // Encriptamos la contraseña antes de guardarla
+                    usuario.Contraseña = HashPassword(usuario.Contraseña);
+
                     _context.Usuarios.Add(usuario); // Especificamos la tabla Usuarios
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Login");
@@ -77,6 +84,16 @@ namespace DWS.Controllers
             }
 
             return View(usuario);
+        }
+
+        // Método helper para encriptar contraseñas (SHA256)
+        private string HashPassword(string password)
+        {
+            using (var sha256 = System.Security.Cryptography.SHA256.Create())
+            {
+                var hashedBytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
         }
 
         [HttpPost]

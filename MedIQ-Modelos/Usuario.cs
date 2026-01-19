@@ -12,5 +12,6 @@ namespace MedIQ_Modelos
         public string Nombre { get; set; }
         public string Email { get; set; }
         public string Contraseña { get; set; }
+        public string Rol { get; set; } = "Usuario";
     }
 }

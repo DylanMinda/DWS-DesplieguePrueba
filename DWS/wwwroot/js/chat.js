@@ -23,24 +23,65 @@
     }
 
     async function handleSend() {
-        if (response.ok) {
-            const data = await response.json();
+        const message = messageInput.value.trim();
+        if (!message) return;
 
-            // n8n envía un JSON dentro de otro JSON. 
-            // Debemos extraer solo la propiedad 'texto'
-            let respuestaFinal = data.texto;
+        // 1. Agregar mensaje del usuario al chat
+        appendMessage(message, 'user');
+        messageInput.value = '';
+        messageInput.style.height = 'auto'; // Reset altura
 
-            // Si la respuesta viene como un string con formato JSON, lo limpiamos
-            if (typeof respuestaFinal === 'string' && respuestaFinal.startsWith('{')) {
-                try {
-                    const tempObj = JSON.parse(respuestaFinal);
-                    respuestaFinal = tempObj.texto;
-                } catch (e) {
-                    console.error("Error al parsear respuesta:", e);
+        // 2. Mostrar loading
+        loadingIndicator.classList.add('active');
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        try {
+            // 3. Enviar al backend
+            const response = await fetch('/Chat/SendMessage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ Texto: message })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+
+                // n8n envía un JSON dentro de otro JSON. 
+                // Debemos extraer solo la propiedad 'texto'
+                let respuestaFinal = data.texto;
+
+                // Si la respuesta viene como un string con formato JSON, lo limpiamos
+                if (typeof respuestaFinal === 'string' && respuestaFinal.startsWith('{')) {
+                    try {
+                        const tempObj = JSON.parse(respuestaFinal);
+                        respuestaFinal = tempObj.texto;
+                    } catch (e) {
+                        console.error("Error al parsear respuesta:", e);
+                    }
                 }
-            }
 
-            appendMessage(respuestaFinal || "El asistente no devolvió respuesta.", 'bot');
+                if (data.alerta) {
+                    // Mostrar alerta visualmente distinta (ej. un borde rojo o icono warning)
+                    const alertaHtml = `<div style="background-color: #fee2e2; border: 1px solid #ef4444; color: #b91c1c; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                                            <strong>${data.alerta}</strong>
+                                        </div>`;
+                    appendMessage(alertaHtml, 'bot');
+                }
+
+                appendMessage(respuestaFinal || "El asistente no devolvió respuesta.", 'bot');
+            } else {
+                appendMessage("Error al conectar con el servidor.", 'bot');
+                console.error("Server error:", response.status);
+            }
+        } catch (error) {
+            console.error("Error de red:", error);
+            appendMessage("No hay conexión con el servidor.", 'bot');
+        } finally {
+            // 4. Ocultar loading
+            loadingIndicator.classList.remove('active');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
     }
 

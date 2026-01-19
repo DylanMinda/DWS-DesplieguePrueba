@@ -40,6 +40,9 @@ namespace DWS.Controllers
         [Authorize]
         public async Task<IActionResult> SendMessage([FromBody] Mensaje mensaje)
         {
+            // 1. Detección de riesgo (Alertas Preventivas RF.APL.04)
+            string alerta = DetectarRiesgo(mensaje.Texto);
+
             // Lee la URL desde las variables de entorno de Render
             string n8nUrl = _configuration["N8N_CHAT_URL"];
 
@@ -56,12 +59,35 @@ namespace DWS.Controllers
                 var response = await client.PostAsync(n8nUrl, content);
                 var respuestaDelAgente = await response.Content.ReadAsStringAsync();
 
-                return Json(new { texto = respuestaDelAgente, esIA = true });
+                // Devolvemos tanto la respuesta de la IA como la posible alerta
+                return Json(new { texto = respuestaDelAgente, esIA = true, alerta = alerta });
             }
             catch (Exception ex)
             {
                 return Json(new { texto = "Error de comunicación: " + ex.Message, esIA = true });
             }
+        }
+
+        private string DetectarRiesgo(string mensaje)
+        {
+            if (string.IsNullOrEmpty(mensaje)) return null;
+
+            mensaje = mensaje.ToLower();
+            var palabrasClave = new[] { 
+                "tomé demasiado", "tome demasiado", "sobredosis", 
+                "mezclar", "sin receta", "duele mucho", "suicidio", "morir" 
+            };
+
+            foreach (var palabra in palabrasClave)
+            {
+                if (mensaje.Contains(palabra))
+                {
+                    return "⚠️ PRECAUCIÓN: Detectamos que tu consulta implica riesgos de salud graves o interacciones peligrosas. " +
+                           "Recuerda que este sistema NO reemplaza a un médico. Si tienes síntomas graves, acude a urgencias inmediatamente.";
+                }
+            }
+
+            return null;
         }
 
         public IActionResult ProcesarImagen(string archivo)

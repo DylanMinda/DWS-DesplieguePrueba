@@ -4,19 +4,19 @@ using MedIQ_Modelos;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- 1. CONFIGURACIÓN DEL SERVIDOR (RENDER) ---
+// --- 1. CONFIGURACIÃ“N DEL SERVIDOR (RENDER) ---
 var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
 builder.WebHost.UseUrls($"http://*:{port}");
 
 // --- 2. REGISTRO DE SERVICIOS (TODO ANTES DE builder.Build()) ---
 builder.Services.AddControllersWithViews();
 
-// CONFIGURACIÓN DE LA BASE DE DATOS EN LA NUBE
+// CONFIGURACIÃ“N DE LA BASE DE DATOS EN LA NUBE
 var connectionString = builder.Configuration.GetConnectionString("AppDbContext");
 
 if (string.IsNullOrEmpty(connectionString))
 {
-    throw new InvalidOperationException("La cadena de conexión 'AppDbContext' no fue encontrada.");
+    throw new InvalidOperationException("La cadena de conexiÃ³n 'AppDbContext' no fue encontrada.");
 }
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -28,7 +28,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
             errorCodesToAdd: null);
     }));
 
-// CONFIGURACIÓN DE AUTENTICACIÓN
+// CONFIGURACIÃ“N DE AUTENTICACIÃ“N
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => {
         options.LoginPath = "/Account/Login";
@@ -36,10 +36,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.Name = "MedIQ_Auth";
     });
 
-// --- 3. CONSTRUCCIÓN DE LA APLICACIÓN ---
-var app = builder.Build(); // <--- Ahora sí, todos los servicios están registrados
+// --- 3. CONSTRUCCIÃ“N DE LA APLICACIÃ“N ---
+var app = builder.Build(); // <--- Ahora sÃ­, todos los servicios estÃ¡n registrados
 
-// --- 4. CONFIGURACIÓN DEL PIPELINE (MIDDLEWARE) ---
+// --- 4. CONFIGURACIÃ“N DEL PIPELINE (MIDDLEWARE) ---
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -47,7 +47,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 // Nota: En Render, el SSL lo maneja su propio Proxy. 
-// Si ves errores de redirección infinita, mantén esta línea comentada.
+// Si ves errores de redirecciÃ³n infinita, mantÃ©n esta lÃ­nea comentada.
 // app.UseHttpsRedirection();
 
 app.UseStaticFiles();
@@ -60,5 +60,22 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Welcome}/{id?}");
+
+// AUTO-MIGRACIÃ“N (SEGURO PARA AMBOS)
+// EF Core verifica si ya existe la migraciÃ³n antes de aplicarla.
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        context.Database.Migrate(); 
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Error migrando DB desde DWS.");
+    }
+}
 
 app.Run();
