@@ -1,63 +1,81 @@
-﻿@model MedIQ_Modelos.Usuario
-
-@{
-    ViewData["Title"] = "Registro";
+﻿@{
+    ViewData["Title"] = "Crear Cuenta";
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/register.css" />
+    <link rel="stylesheet" href="~/css/auth.css" />
 }
 
-<div class="form-container">
-    <div class="form-header">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="8" r="4" fill="#2563eb" />
-            <path d="M4 20C4 16.6863 6.68629 14 10 14H14C17.3137 14 20 16.6863 20 20" stroke="#2563eb" stroke-width="2" stroke-linecap="round" />
-        </svg>
-        <h1>Crear Cuenta</h1>
-        <p>Únete para acceder a tu asistente médico</p>
+<div class="auth-container fade-in-up">
+    <div class="auth-card glass-card">
+        <div class="auth-header">
+            <div class="auth-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="8.5" cy="7" r="4"></circle>
+                    <line x1="20" y1="8" x2="20" y2="14"></line>
+                    <line x1="23" y1="11" x2="17" y2="11"></line>
+                </svg>
+            </div>
+            <h1>¡Únete a MedIQ! 🚀</h1>
+            <p>Crea tu cuenta y comienza a explorar</p>
+        </div>
+
+        <form asp-action="Register" method="post" class="auth-form">
+            <div class="form-group">
+                <label class="form-label" for="nombre">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Nombre Completo
+                </label>
+                <input type="text" id="nombre" name="Nombre" class="form-input" placeholder="Tu nombre" required autocomplete="name">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    Correo Electrónico
+                </label>
+                <input type="email" id="email" name="Email" class="form-input" placeholder="tu@email.com" required autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    Contraseña
+                </label>
+                <input type="password" id="password" name="Password" class="form-input" placeholder="Mínimo 8 caracteres" required autocomplete="new-password">
+                <small class="form-hint">
+                    ✓ Mínimo 8 caracteres &nbsp; ✓ 1 mayúscula &nbsp; ✓ 1 número
+                </small>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full submit-btn">
+                <span>Crear Cuenta</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>¿Ya tienes cuenta?</p>
+            <a asp-action="Login" class="link-accent">Inicia sesión →</a>
+        </div>
     </div>
 
-    @* Mostramos errores de validación si los hay *@
-    <div asp-validation-summary="ModelOnly" class="text-danger" style="margin-bottom: 1rem; list-style: none; font-size: 0.9rem;"></div>
-
-    <form asp-action="Register" method="post">
-        <div class="form-group">
-            <label class="form-label" asp-for="Nombre">Nombre Completo</label>
-            <input asp-for="Nombre" class="form-input" placeholder="Juan Pérez" required>
-            <span asp-validation-for="Nombre" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label" asp-for="Email">Correo Electrónico</label>
-            <input asp-for="Email" class="form-input" placeholder="tu@email.com" required>
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label" asp-for="Contraseña">Contraseña</label>
-            <input asp-for="Contraseña" type="password" class="form-input" placeholder="••••••••" required>
-            <span asp-validation-for="Contraseña" class="text-danger"></span>
-        </div>
-
-        @* Nota: Si tu modelo Usuario no tiene ConfirmPassword, este campo solo sirve para validación visual por ahora *@
-        <div class="form-group">
-            <label class="form-label" for="confirmPassword">Confirmar Contraseña</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="••••••••" required>
-        </div>
-
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-full">Crear Cuenta</button>
-        </div>
-
-        <div class="form-footer">
-            ¿Ya tienes cuenta? <a asp-action="Login">Inicia sesión</a>
-        </div>
-    </form>
+    <div class="auth-decoration">
+        <div class="decoration-circle circle-1"></div>
+        <div class="decoration-circle circle-2"></div>
+        <div class="decoration-circle circle-3"></div>
+    </div>
 </div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}

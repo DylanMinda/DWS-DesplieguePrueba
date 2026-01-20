@@ -18,6 +18,11 @@ namespace DWS.Controllers
             return View();
         }
 
+        public IActionResult Instructions()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

@@ -27,10 +27,10 @@
     text-decoration: none;
 }
 
-    .navbar-brand svg {
-        width: 32px;
-        height: 32px;
-    }
+.navbar-brand svg {
+    width: 32px;
+    height: 32px;
+}
 
 .navbar-menu {
     display: flex;
@@ -46,10 +46,63 @@
     transition: all 0.3s;
 }
 
-    .navbar-link:hover {
-        background: var(--bg-light);
-        color: var(--primary-color);
-    }
+.navbar-link:hover {
+    background: var(--bg-light);
+    color: var(--primary-color);
+}
+
+/* Chat Link with Icon */
+.chat-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white !important;
+    padding: 10px 20px !important;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+}
+
+.chat-link:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.5);
+}
+
+.chat-link svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Logout Button with Icon */
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white !important;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+    font-size: 1rem;
+}
+
+.logout-btn:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(239, 68, 68, 0.5);
+}
+
+.logout-btn svg {
+    width: 18px;
+    height: 18px;
+}
 
 @media (max-width: 768px) {
     .navbar-content {

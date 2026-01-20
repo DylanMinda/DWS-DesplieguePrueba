@@ -61,23 +61,22 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Welcome}/{id?}");
 
-// AUTO-MIGRACIÓN (SEGURO PARA AMBOS)
-// EF Core verifica si ya existe la migración antes de aplicarla.
+// AUTO-MIGRACIÓN (SEGURO PARA PRODUCCIÓN)
+// EF Core aplica solo las migraciones pendientes sin borrar datos existentes.
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
         var context = services.GetRequiredService<AppDbContext>();
-        // ⚠️ REINICIO DE DB: Borra tablas viejas incompatibles y crea las nuevas con Roles y Encriptación.
-        // Solo para este despliegue de corrección.
-        context.Database.EnsureDeleted(); 
+        // SOLO MIGRACIÓN - Preserva datos existentes
         context.Database.Migrate(); 
+        Console.WriteLine("✅ Migraciones aplicadas correctamente.");
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Error migrando DB desde DWS.");
+        logger.LogError(ex, "❌ Error migrando DB desde DWS.");
     }
 }
 

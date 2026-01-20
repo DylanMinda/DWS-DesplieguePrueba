@@ -1,65 +1,93 @@
 ﻿@{
-    ViewData["Title"] = "Bienvenido";
+    ViewData["Title"] = "Bienvenido a MedIQ";
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/welcome.css" />
 }
 
-<div class="welcome-container">
-    <div class="welcome-header">
-        <h1>Asistente Inteligente de Medicación</h1>
-        <p>Tu compañero confiable para información sobre medicamentos, tratamientos y salud. Selecciona un tema para comenzar.</p>
+<div class="welcome-container fade-in-up">
+    <div class="welcome-hero">
+        <div class="hero-icon-wrapper">
+            <div class="floating-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" />
+                    <path d="M2 17L12 22L22 17M2 12L12 17L22 12" />
+                </svg>
+            </div>
+        </div>
+        <h1 class="hero-title">
+            Bienvenido a <span class="gradient-text">MedIQ</span>
+        </h1>
+        <p class="hero-subtitle">
+            Tu asistente inteligente de información médica 🩺
+        </p>
+        <p class="hero-description">
+            Información confiable sobre medicamentos, tratamientos y salud al alcance de tu mano
+        </p>
     </div>
 
-    <div class="categories-grid">
-        <a asp-action="Chat" asp-route-category="medicamentos" class="category-card">
-            <div class="category-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4.5 5.5L19.5 5.5L19.5 18.5C19.5 19.6046 18.6046 20.5 17.5 20.5L6.5 20.5C5.39543 20.5 4.5 19.6046 4.5 18.5L4.5 5.5Z" stroke="white" stroke-width="2" />
-                    <path d="M8 9L16 9M8 13L16 13M8 17L12 17" stroke="white" stroke-width="2" stroke-linecap="round" />
-                </svg>
+    <div class="features-grid">
+        <div class="feature-card glass-card">
+            <div class="feature-icon">
+                💊
             </div>
-            <h3>Información de Medicamentos</h3>
-            <p>Consulta sobre composición, indicaciones, dosis y efectos secundarios de medicamentos específicos</p>
-        </a>
+            <h3>Información Precisa</h3>
+            <p>Datos actualizados sobre medicamentos, dosis y efectos</p>
+        </div>
 
-        <a asp-action="Chat" asp-route-category="interacciones" class="category-card">
-            <div class="category-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="8" cy="8" r="3" stroke="white" stroke-width="2" />
-                    <circle cx="16" cy="16" r="3" stroke="white" stroke-width="2" />
-                    <path d="M10.5 10L13.5 14" stroke="white" stroke-width="2" stroke-linecap="round" />
-                </svg>
+        <div class="feature-card glass-card">
+            <div class="feature-icon">
+                ⚡
             </div>
-            <h3>Interacciones Medicamentosas</h3>
-            <p>Verifica posibles interacciones entre medicamentos, alimentos y condiciones médicas</p>
-        </a>
+            <h3>Respuestas Rápidas</h3>
+            <p>Obtén información al instante con IA avanzada</p>
+        </div>
 
-        <a asp-action="Chat" asp-route-category="tratamientos" class="category-card">
-            <div class="category-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L12 22M2 12L22 12" stroke="white" stroke-width="2" stroke-linecap="round" />
-                    <circle cx="12" cy="12" r="8" stroke="white" stroke-width="2" />
-                </svg>
+        <div class="feature-card glass-card">
+            <div class="feature-icon">
+                🛡️
             </div>
-            <h3>Tratamientos y Terapias</h3>
-            <p>Aprende sobre opciones de tratamiento, protocolos médicos y cuidados específicos</p>
-        </a>
+            <h3>Alertas de Seguridad</h3>
+            <p>Sistema de detección de riesgos en tiempo real</p>
+        </div>
+
+        <div class="feature-card glass-card">
+            <div class="feature-icon">
+                🎯
+            </div>
+            <h3>Fácil de Usar</h3>
+            <p>Interfaz intuitiva diseñada para todos</p>
+        </div>
     </div>
 
-    <div class="questions-container">
+    <div class="cta-section">
         @if (User.Identity.IsAuthenticated)
         {
-            <a asp-action="Chat" asp-controller="Chat" class="btn btn-primary">
-                Comenzar Conversación Libre
+            <a asp-action="Instructions" asp-controller="Home" class="btn btn-primary btn-large">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                Comenzar Ahora
             </a>
         }
         else
         {
-            <a asp-action="Login" asp-controller="Account" class="btn btn-primary">
-                Inicia sesión para comenzar
-            </a>
+            <div class="auth-buttons">
+                <a asp-action="Login" asp-controller="Account" class="btn btn-primary btn-large">
+                    Iniciar Sesión
+                </a>
+                <a asp-action="Register" asp-controller="Account" class="btn btn-secondary btn-large">
+                    Crear Cuenta
+                </a>
+            </div>
         }
+    </div>
+
+    <div class="info-banner glass-card">
+        <div class="banner-icon">ℹ️</div>
+        <div class="banner-content">
+            <strong>Importante:</strong> MedIQ es una herramienta educativa. No sustituye la consulta médica profesional.
+        </div>
     </div>
 </div>

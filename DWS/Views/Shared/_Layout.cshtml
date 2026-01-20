@@ -11,26 +11,54 @@
 <body>
     <nav class="navbar">
         <div class="navbar-content">
-            <a asp-action="Welcome" class="navbar-brand">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z" />
-                    <path d="M2 17L12 22L22 17M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" fill="none" />
-                </svg>
-                MedIQ
-            </a>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a asp-action="Instructions" asp-controller="Home" class="navbar-brand">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" />
+                        <path d="M2 17L12 22L22 17M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" fill="none" />
+                    </svg>
+                    MedIQ
+                </a>
+            }
+            else
+            {
+                <a asp-action="Welcome" asp-controller="Home" class="navbar-brand">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" />
+                        <path d="M2 17L12 22L22 17M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" fill="none" />
+                    </svg>
+                    MedIQ
+                </a>
+            }
             <ul class="navbar-menu">
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <li><a asp-action="Chat" asp-controller="Chat" class="navbar-link">Chat</a></li>
+                    <li>
+                        <a asp-action="Chat" asp-controller="Chat" class="navbar-link chat-link">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            Iniciar Conversación
+                        </a>
+                    </li>
                     <li>
                         <form asp-action="Logout" asp-controller="Account" method="post" style="display:inline;">
-                            <button type="submit" class="navbar-link" style="background:none; border:none; cursor:pointer;">Salir</button>
+                            <button type="submit" class="navbar-link logout-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                                Salir
+                            </button>
                         </form>
                     </li>
                 }
             </ul>
         </div>
     </nav>
+
 
     <main>
         @RenderBody()

@@ -77,7 +77,14 @@ namespace DWS.Controllers
             mensaje = mensaje.ToLower();
             var palabrasClave = new[] { 
                 "tomé demasiado", "tome demasiado", "sobredosis", 
-                "mezclar", "sin receta", "duele mucho", "suicidio", "morir" 
+                "mezclar", "sin receta", "duele mucho", "suicidio", "morir","abortar",
+                "hacerme daño", "cortarme", "autolesión", "cutting", "no quiero vivir",
+                "no aguanto más", "no puedo más", "quiero morir", "quiero dejar de vivir",
+                "aborto casero", "métodos naturales para abortar", "abortar en casa",
+                "abortar sin dolor", "abortar sin riesgos", "abortar sin complicaciones",
+                "pastillas con alcohol", "combinar drogas", "mezcla letal","convulsiones", 
+                "desmayo", "perder el conocimiento", "no respiro", "no puedo respirar",
+                "dolor insoportable", "hemorragia", "sangrado abundante"
             };
 
             foreach (var palabra in palabrasClave)
