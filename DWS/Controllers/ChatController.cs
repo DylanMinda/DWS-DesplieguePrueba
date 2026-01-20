@@ -64,7 +64,9 @@ namespace DWS.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { texto = "Error de comunicación: " + ex.Message, esIA = true });
+                // FALLBACK DE SEGURIDAD:
+                // Incluso si la IA falla, debemos mostrar la alerta si existe.
+                return Json(new { texto = "Error de comunicación con el Agente: " + ex.Message, esIA = true, alerta = alerta });
             }
         }
 
