@@ -13,8 +13,9 @@
     margin: 0 auto;
     padding: 0 20px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .navbar-brand {
@@ -36,6 +37,8 @@
     display: flex;
     gap: 20px;
     list-style: none;
+    position: absolute;
+    right: 20px;
 }
 
 .navbar-link {

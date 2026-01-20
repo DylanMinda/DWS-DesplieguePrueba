@@ -72,6 +72,23 @@ using (var scope = app.Services.CreateScope())
         // SOLO MIGRACIÓN - Preserva datos existentes
         context.Database.Migrate(); 
         Console.WriteLine("✅ Migraciones aplicadas correctamente.");
+
+        // SEED DATA: Crear usuario administrador por defecto
+        if (!context.Usuarios.Any(u => u.Rol == "Admin"))
+        {
+            var admin = new Usuario
+            {
+                Nombre = "Administrador",
+                Email = "admin@mediq.com",
+                Contraseña = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
+                Rol = "Admin"
+            };
+            context.Usuarios.Add(admin);
+            context.SaveChanges();
+            Console.WriteLine("✅ Usuario administrador creado:");
+            Console.WriteLine("   📧 Email: admin@mediq.com");
+            Console.WriteLine("   🔑 Contraseña: Admin123!");
+        }
     }
     catch (Exception ex)
     {

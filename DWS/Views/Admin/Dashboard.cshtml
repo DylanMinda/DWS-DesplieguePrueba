@@ -1,0 +1,62 @@
+@{
+    ViewData["Title"] = "Panel de Administración";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin.css" />
+}
+
+<div class="admin-container fade-in-up">
+    <div class="admin-header">
+        <h1>🛡️ Panel de Administración</h1>
+        <p>Gestión y monitoreo del sistema MedIQ</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card glass-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-content">
+                <h3>@ViewBag.Stats.TotalUsuarios</h3>
+                <p>Usuarios Registrados</p>
+            </div>
+        </div>
+
+        <div class="stat-card glass-card">
+            <div class="stat-icon">💬</div>
+            <div class="stat-content">
+                <h3>@ViewBag.Stats.TotalConversaciones</h3>
+                <p>Conversaciones Creadas</p>
+            </div>
+        </div>
+
+        <div class="stat-card glass-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-content">
+                <h3>@ViewBag.Stats.MensajesHoy</h3>
+                <p>Mensajes Hoy</p>
+            </div>
+        </div>
+
+        <div class="stat-card glass-card">
+            <div class="stat-icon">🔑</div>
+            <div class="stat-content">
+                <h3>@ViewBag.Stats.UsuariosAdmin</h3>
+                <p>Administradores</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-actions">
+        <a asp-action="Users" class="action-card glass-card">
+            <div class="action-icon">👤</div>
+            <h3>Gestionar Usuarios</h3>
+            <p>Ver, editar y eliminar usuarios del sistema</p>
+        </a>
+
+        <a asp-action="Conversations" class="action-card glass-card">
+            <div class="action-icon">💭</div>
+            <h3>Ver Conversaciones</h3>
+            <p>Monitorear todas las conversaciones del sistema</p>
+        </a>
+    </div>
+</div>

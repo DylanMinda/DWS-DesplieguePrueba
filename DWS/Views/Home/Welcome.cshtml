@@ -25,6 +25,28 @@
         <p class="hero-description">
             Información confiable sobre medicamentos, tratamientos y salud al alcance de tu mano
         </p>
+
+        @* Auth buttons right after description *@
+        <div class="hero-auth-buttons">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a asp-action="Instructions" asp-controller="Home" class="btn btn-primary btn-large">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Comenzar Ahora
+                </a>
+            }
+            else
+            {
+                <a asp-action="Login" asp-controller="Account" class="btn btn-primary btn-large">
+                    Iniciar Sesión
+                </a>
+                <a asp-action="Register" asp-controller="Account" class="btn btn-secondary btn-large">
+                    Crear Cuenta
+                </a>
+            }
+        </div>
     </div>
 
     <div class="features-grid">
@@ -59,29 +81,6 @@
             <h3>Fácil de Usar</h3>
             <p>Interfaz intuitiva diseñada para todos</p>
         </div>
-    </div>
-
-    <div class="cta-section">
-        @if (User.Identity.IsAuthenticated)
-        {
-            <a asp-action="Instructions" asp-controller="Home" class="btn btn-primary btn-large">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                </svg>
-                Comenzar Ahora
-            </a>
-        }
-        else
-        {
-            <div class="auth-buttons">
-                <a asp-action="Login" asp-controller="Account" class="btn btn-primary btn-large">
-                    Iniciar Sesión
-                </a>
-                <a asp-action="Register" asp-controller="Account" class="btn btn-secondary btn-large">
-                    Crear Cuenta
-                </a>
-            </div>
-        }
     </div>
 
     <div class="info-banner glass-card">

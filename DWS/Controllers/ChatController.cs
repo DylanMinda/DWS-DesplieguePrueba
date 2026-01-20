@@ -4,16 +4,20 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;
+using MedIQ_API.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace DWS.Controllers
 {
     public class ChatController : Controller
     {
         private readonly IConfiguration _configuration;
+        private readonly AppDbContext _context;
 
-        public ChatController(IConfiguration configuration)
+        public ChatController(IConfiguration configuration, AppDbContext context)
         {
             _configuration = configuration;
+            _context = context;
         }
 
         // Página de inicio (Bienvenida)
@@ -42,6 +46,12 @@ namespace DWS.Controllers
         {
             // 1. Detección de riesgo (Alertas Preventivas RF.APL.04)
             string alerta = DetectarRiesgo(mensaje.Texto);
+
+            // 2. Detección de solicitudes de diagnóstico médico
+            if (alerta == null)
+            {
+                alerta = DetectarDiagnostico(mensaje.Texto);
+            }
 
             // Lee la URL desde las variables de entorno de Render
             string n8nUrl = _configuration["N8N_CHAT_URL"];
@@ -99,10 +109,143 @@ namespace DWS.Controllers
             return null;
         }
 
+        private string DetectarDiagnostico(string mensaje)
+        {
+            if (string.IsNullOrEmpty(mensaje)) return null;
+
+            mensaje = mensaje.ToLower();
+            var palabrasDiagnostico = new[] {
+                "tengo", "me duele", "siento", "padezco", "sufro de",
+                "diagnostícame", "qué tengo", "que tengo", "estoy enfermo",
+                "me diagnosticas", "crees que tengo", "será que tengo",
+                "tengo síntomas de", "creo que tengo", "me salió"
+            };
+
+            foreach (var palabra in palabrasDiagnostico)
+            {
+                if (mensaje.Contains(palabra))
+                {
+                    return "🩺 Lo siento, no puedo realizar diagnósticos médicos. " +
+                           "MedIQ es una herramienta educativa sobre medicamentos y tratamientos, " +
+                           "pero NO puede diagnosticar enfermedades ni evaluar síntomas. " +
+                           "Si tienes molestias o síntomas, por favor consulta con un médico profesional.";
+                }
+            }
+
+            return null;
+        }
+
         public IActionResult ProcesarImagen(string archivo)
         {
             ViewBag.NombreArchivo = archivo;
             return View(); // Debes crear la vista ProcesarImagen.cshtml
         }
+
+        // ========== CONVERSATION HISTORY ENDPOINTS ==========
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreateSession([FromBody] string titulo)
+        {
+            var email = User.Identity.Name;
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
+            if (usuario == null) return Unauthorized();
+
+            var session = new ChatSession
+            {
+                Titulo = string.IsNullOrEmpty(titulo) ? "Nuevo Chat" : titulo,
+                FechaCreacion = DateTime.UtcNow,
+                UsuarioId = usuario.Id
+            };
+
+            _context.ChatSessions.Add(session);
+            await _context.SaveChangesAsync();
+
+            return Json(new { sessionId = session.Id, titulo = session.Titulo, fecha = session.FechaCreacion });
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetUserSessions()
+        {
+            var email = User.Identity.Name;
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
+            if (usuario == null) return Unauthorized();
+
+            var sessions = await _context.ChatSessions
+                .Where(s => s.UsuarioId == usuario.Id)
+                .OrderByDescending(s => s.FechaCreacion)
+                .Select(s => new
+                {
+                    id = s.Id,
+                    titulo = s.Titulo,
+                    fecha = s.FechaCreacion
+                })
+                .ToListAsync();
+
+            return Json(sessions);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetSessionMessages(int sessionId)
+        {
+            var email = User.Identity.Name;
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
+            if (usuario == null) return Unauthorized();
+
+            var session = await _context.ChatSessions
+                .FirstOrDefaultAsync(s => s.Id == sessionId && s.UsuarioId == usuario.Id);
+            if (session == null) return NotFound();
+
+            var mensajes = await _context.Mensajes
+                .Where(m => m.ChatSessionId == sessionId)
+                .OrderBy(m => m.Fecha)
+                .Select(m => new
+                {
+                    texto = m.Texto,
+                    esIA = m.EsIA,
+                    fecha = m.Fecha,
+                    imagenUrl = m.ImagenUrl
+                })
+                .ToListAsync();
+
+            return Json(mensajes);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> SaveMessage([FromBody] SaveMessageRequest request)
+        {
+            var email = User.Identity.Name;
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
+            if (usuario == null) return Unauthorized();
+
+            var session = await _context.ChatSessions
+                .FirstOrDefaultAsync(s => s.Id == request.SessionId && s.UsuarioId == usuario.Id);
+            if (session == null) return NotFound();
+
+            var mensaje = new Mensaje
+            {
+                Texto = request.Texto,
+                EsIA = request.EsIA,
+                Fecha = DateTime.UtcNow,
+                ChatSessionId = request.SessionId,
+                ImagenUrl = request.ImagenUrl
+            };
+
+            _context.Mensajes.Add(mensaje);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+    }
+
+    public class SaveMessageRequest
+    {
+        public int SessionId { get; set; }
+        public string Texto { get; set; }
+        public bool EsIA { get; set; }
+        public string? ImagenUrl { get; set; }
     }
 }

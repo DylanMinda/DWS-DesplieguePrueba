@@ -31,6 +31,9 @@
         messageInput.value = '';
         messageInput.style.height = 'auto'; // Reset altura
 
+        // 1.5 Guardar mensaje del usuario en BD
+        await saveMessageToSession(message, false);
+
         // 2. Mostrar loading
         loadingIndicator.classList.add('active');
         chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -68,9 +71,14 @@
                                             <strong>${data.alerta}</strong>
                                         </div>`;
                     appendMessage(alertaHtml, 'bot');
+                    // Guardar alerta en BD
+                    await saveMessageToSession(data.alerta, true);
                 }
 
-                appendMessage(respuestaFinal || "El asistente no devolvió respuesta.", 'bot');
+                const botMessage = respuestaFinal || "El asistente no devolvió respuesta.";
+                appendMessage(botMessage, 'bot');
+                // Guardar respuesta del bot en BD
+                await saveMessageToSession(botMessage, true);
             } else {
                 appendMessage("Error al conectar con el servidor.", 'bot');
                 console.error("Server error:", response.status);

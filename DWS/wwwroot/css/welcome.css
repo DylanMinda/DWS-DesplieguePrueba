@@ -16,19 +16,20 @@
 .welcome-hero {
     text-align: center;
     max-width: 700px;
+    margin-bottom: 1rem;
 }
 
 .hero-icon-wrapper {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .floating-icon {
-    width: 100px;
-    height: 100px;
+    width: 60px;
+    height: 60px;
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
-    border-radius: 30px;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -37,8 +38,8 @@
 }
 
 .floating-icon svg {
-    width: 50px;
-    height: 50px;
+    width: 30px;
+    height: 30px;
     color: white;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
@@ -56,10 +57,10 @@
 }
 
 .hero-title {
-    font-size: 3.5rem;
+    font-size: 2.5rem;
     font-weight: 800;
     color: white;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     line-height: 1.2;
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
@@ -84,6 +85,18 @@
     font-size: 1.1rem;
     color: rgba(255, 255, 255, 0.85);
     line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.hero-auth-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hero-auth-buttons .btn-large {
+    min-width: 180px;
 }
 
 /* Features Grid */

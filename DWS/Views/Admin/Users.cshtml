@@ -1,0 +1,75 @@
+@model List<MedIQ_Modelos.Usuario>
+
+@{
+    ViewData["Title"] = "Gestión de Usuarios";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin.css" />
+}
+
+<div class="admin-container fade-in-up">
+    <div class="admin-header">
+        <h1>👥 Gestión de Usuarios</h1>
+        <p>Administrar roles y permisos de usuarios</p>
+        <a asp-action="Dashboard" class="btn btn-secondary">← Volver al Dashboard</a>
+    </div>
+
+    <div class="users-table-container glass-card">
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var usuario in Model)
+                {
+                    <tr>
+                        <td>@usuario.Id</td>
+                        <td>@usuario.Nombre</td>
+                        <td>@usuario.Email</td>
+                        <td>
+                            <span class="role-badge @(usuario.Rol == "Admin" ? "role-admin" : "role-user")">
+                                @usuario.Rol
+                            </span>
+                        </td>
+                        <td class="actions-cell">
+                            @if (usuario.Rol == "Admin")
+                            {
+                                <form asp-action="ChangeRole" method="post" style="display:inline;">
+                                    <input type="hidden" name="userId" value="@usuario.Id" />
+                                    <input type="hidden" name="newRole" value="Usuario" />
+                                    <button type="submit" class="btn-action btn-demote" onclick="return confirm('¿Degradar a Usuario?')">
+                                        ⬇️ Degradar
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="ChangeRole" method="post" style="display:inline;">
+                                    <input type="hidden" name="userId" value="@usuario.Id" />
+                                    <input type="hidden" name="newRole" value="Admin" />
+                                    <button type="submit" class="btn-action btn-promote" onclick="return confirm('¿Promover a Admin?')">
+                                        ⬆️ Promover
+                                    </button>
+                                </form>
+                            }
+                            
+                            <form asp-action="DeleteUser" method="post" style="display:inline;">
+                                <input type="hidden" name="userId" value="@usuario.Id" />
+                                <button type="submit" class="btn-action btn-delete" onclick="return confirm('¿Eliminar usuario @usuario.Nombre? Esta acción no se puede deshacer.')">
+                                    🗑️ Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
