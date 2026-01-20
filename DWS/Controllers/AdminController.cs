@@ -1,4 +1,3 @@
-using MedIQ_API.Data;
 using MedIQ_Modelos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

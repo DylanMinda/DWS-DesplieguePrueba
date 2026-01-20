@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;
-using MedIQ_API.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace DWS.Controllers
