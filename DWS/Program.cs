@@ -74,7 +74,7 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine("✅ Migraciones aplicadas correctamente.");
 
         // SEED DATA: Crear usuario administrador por defecto
-        if (!context.Usuarios.Any(u => u.Rol == "Admin"))
+        if (!context.Usuarios.Any(u => u.Email == "admin@mediq.com"))
         {
             var admin = new Usuario
             {

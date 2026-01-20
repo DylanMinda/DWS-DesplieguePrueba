@@ -30,13 +30,12 @@ namespace DWS.Controllers
                 return View();
             }
 
-            // Encriptamos la contraseña ingresada para compararla con la de la BD
-            string passwordHash = HashPassword(Password);
-
+            // Buscar usuario por email
             var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.Email == Email && u.Contraseña == passwordHash);
+                .FirstOrDefaultAsync(u => u.Email == Email);
 
-            if (usuario != null)
+            // Verificar si el usuario existe y la contraseña es correcta usando BCrypt
+            if (usuario != null && BCrypt.Net.BCrypt.Verify(Password, usuario.Contraseña))
             {
                 var claims = new List<Claim> {
                     new Claim(ClaimTypes.Name, usuario.Nombre),
@@ -83,8 +82,8 @@ namespace DWS.Controllers
                         return View(usuario);
                     }
 
-                    // Encriptamos la contraseña antes de guardarla
-                    usuario.Contraseña = HashPassword(usuario.Contraseña);
+                    // Encriptamos la contraseña antes de guardarla usando BCrypt
+                    usuario.Contraseña = BCrypt.Net.BCrypt.HashPassword(usuario.Contraseña);
 
                     _context.Usuarios.Add(usuario); // Especificamos la tabla Usuarios
                     await _context.SaveChangesAsync();
