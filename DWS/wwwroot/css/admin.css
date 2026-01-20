@@ -221,3 +221,21 @@
         flex-direction: column;
     }
 }
+
+/* Badge */
+.badge {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-light);
+    font-size: 1.1rem;
+}

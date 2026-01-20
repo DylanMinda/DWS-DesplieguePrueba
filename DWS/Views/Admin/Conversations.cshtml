@@ -1,0 +1,54 @@
+@model dynamic
+
+@{
+    ViewData["Title"] = "Todas las Conversaciones";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin.css" />
+}
+
+<div class="admin-container fade-in-up">
+    <div class="admin-header">
+        <h1>💬 Todas las Conversaciones</h1>
+        <p>Monitor de conversaciones del sistema</p>
+        <a asp-action="Dashboard" class="btn btn-secondary">← Volver al Dashboard</a>
+    </div>
+
+    <div class="users-table-container glass-card">
+        @if (Model != null && Model.Count > 0)
+        {
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Mensajes</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var conv in Model)
+                    {
+                        <tr>
+                            <td>@conv.Id</td>
+                            <td>@conv.Titulo</td>
+                            <td>@conv.UsuarioNombre</td>
+                            <td>@conv.UsuarioEmail</td>
+                            <td><span class="badge">@conv.CantidadMensajes</span></td>
+                            <td>@conv.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="empty-state">
+                <p>📭 No hay conversaciones registradas aún.</p>
+            </div>
+        }
+    </div>
+</div>

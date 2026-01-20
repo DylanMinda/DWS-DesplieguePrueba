@@ -9,13 +9,12 @@
 }
 
 .navbar-content {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 20px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    position: relative;
 }
 
 .navbar-brand {
@@ -35,10 +34,9 @@
 
 .navbar-menu {
     display: flex;
-    gap: 20px;
+    gap: 15px;
     list-style: none;
-    position: absolute;
-    right: 20px;
+    align-items: center;
 }
 
 .navbar-link {
