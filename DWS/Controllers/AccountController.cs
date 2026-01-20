@@ -61,8 +61,9 @@ namespace DWS.Controllers
                 if (passwordValida)
                 {
                     var claims = new List<Claim> {
-                        new Claim(ClaimTypes.Name, usuario.Nombre),
+                        new Claim(ClaimTypes.Name, usuario.Email),  // ← Email como Name para User.Identity.Name
                         new Claim(ClaimTypes.Email, usuario.Email),
+                        new Claim("NombreCompleto", usuario.Nombre),  // ← Nombre en claim separado
                         new Claim("UsuarioId", usuario.Id.ToString()),
                         new Claim(ClaimTypes.Role, usuario.Rol)
                     };

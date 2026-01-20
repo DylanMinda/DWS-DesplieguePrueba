@@ -1,26 +1,28 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
+﻿// Global function to append messages (used by both chat.js and chat-sessions.js)
+function appendMessage(content, sender) {
+    const chatMessages = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', sender);
+
+    let htmlContent = '';
+    if (sender === 'bot') {
+        htmlContent = `
+            <div class="message-avatar">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" /></svg>
+            </div>`;
+    }
+    htmlContent += `<div class="message-content">${content}</div>`;
+
+    messageDiv.innerHTML = htmlContent;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+document.addEventListener('DOMContentLoaded', function () {
     const chatMessages = document.getElementById('chatMessages');
     const messageInput = document.getElementById('messageInput');
     const sendBtn = document.getElementById('sendBtn');
     const loadingIndicator = document.getElementById('loadingIndicator');
-
-    function appendMessage(content, sender) {
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message', sender);
-
-        let htmlContent = '';
-        if (sender === 'bot') {
-            htmlContent = `
-                <div class="message-avatar">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" /></svg>
-                </div>`;
-        }
-        htmlContent += `<div class="message-content">${content}</div>`;
-
-        messageDiv.innerHTML = htmlContent;
-        chatMessages.appendChild(messageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
 
     async function handleSend() {
         const message = messageInput.value.trim();

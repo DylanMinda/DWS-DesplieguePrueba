@@ -238,6 +238,30 @@ namespace DWS.Controllers
 
             return Ok();
         }
+
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> DeleteSession(int sessionId)
+        {
+            var email = User.Identity.Name;
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
+            if (usuario == null) return Unauthorized();
+
+            var session = await _context.ChatSessions
+                .FirstOrDefaultAsync(s => s.Id == sessionId && s.UsuarioId == usuario.Id);
+            
+            if (session == null) return NotFound();
+
+            // Delete all messages in this session
+            var mensajes = await _context.Mensajes.Where(m => m.ChatSessionId == sessionId).ToListAsync();
+            _context.Mensajes.RemoveRange(mensajes);
+            
+            // Delete the session
+            _context.ChatSessions.Remove(session);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 
     public class SaveMessageRequest

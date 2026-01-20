@@ -6,6 +6,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/chat.css" />
+    <link rel="stylesheet" href="~/css/chat-delete.css" />
 }
 
 <div class="chat-layout">
@@ -13,7 +14,7 @@
     <div class="chat-sidebar">
         <div class="sidebar-header">
             <h3>Conversaciones</h3>
-            <button class="new-chat-btn" onclick="startNewChat()">
+            <button class="new-chat-btn" id="newChatBtn">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="12" y1="5" x2="12" y2="19"></line>
                     <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -115,6 +116,6 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/chat-sessions.js"></script>
     <script src="~/js/chat.js"></script>
+    <script src="~/js/chat-sessions.js"></script>
 }

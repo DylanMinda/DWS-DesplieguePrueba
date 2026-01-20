@@ -1,0 +1,34 @@
+/* Delete Conversation Button */
+.delete-conversation-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(239, 68, 68, 0.1);
+    border: none;
+    border-radius: 6px;
+    padding: 6px;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease;
+    color: #ef4444;
+}
+
+.conversation-item:hover .delete-conversation-btn {
+    opacity: 1;
+}
+
+.delete-conversation-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.delete-conversation-btn svg {
+    display: block;
+}
+
+.conversation-item {
+    position: relative;
+    padding-right: 40px;
+    /* Make room for delete button */
+}

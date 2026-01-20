@@ -22,6 +22,10 @@
         </div>
 
         <form asp-action="Register" method="post" class="auth-form">
+            <div asp-validation-summary="All" class="text-danger" style="background: rgba(239, 68, 68, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;"></div>
+            
+            <input type="hidden" name="Rol" value="Usuario" />
+            
             <div class="form-group">
                 <label class="form-label" for="nombre">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -52,7 +56,7 @@
                     </svg>
                     Contraseña
                 </label>
-                <input type="password" id="password" name="Password" class="form-input" placeholder="Mínimo 8 caracteres" required autocomplete="new-password">
+                <input type="password" id="password" name="Contraseña" class="form-input" placeholder="Mínimo 8 caracteres" required autocomplete="new-password">
                 <small class="form-hint">
                     ✓ Mínimo 8 caracteres &nbsp; ✓ 1 mayúscula &nbsp; ✓ 1 número
                 </small>

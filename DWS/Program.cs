@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using MedIQ_Modelos;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LogoutPath = "/Account/Logout";
         options.Cookie.Name = "MedIQ_Auth";
     });
+
+// CONFIGURACIÓN DE DATA PROTECTION (Evita que las cookies se corrompan al reiniciar)
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "keys")))
+    .SetApplicationName("MedIQ");
 
 // --- 3. CONSTRUCCIÓN DE LA APLICACIÓN ---
 var app = builder.Build(); // <--- Ahora sí, todos los servicios están registrados
