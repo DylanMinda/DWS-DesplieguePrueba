@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MedIQ-API\MedIQ-API.csproj" />
     <ProjectReference Include="..\MedIQ-CRUD\MedIQ-CRUD.csproj" />
     <ProjectReference Include="..\MedIQ-Modelos\MedIQ-Modelos.csproj" />
