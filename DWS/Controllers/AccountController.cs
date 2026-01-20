@@ -34,22 +34,46 @@ namespace DWS.Controllers
             var usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(u => u.Email == Email);
 
-            // Verificar si el usuario existe y la contraseña es correcta usando BCrypt
-            if (usuario != null && BCrypt.Net.BCrypt.Verify(Password, usuario.Contraseña))
+            if (usuario != null)
             {
-                var claims = new List<Claim> {
-                    new Claim(ClaimTypes.Name, usuario.Nombre),
-                    new Claim(ClaimTypes.Email, usuario.Email),
-                    new Claim("UsuarioId", usuario.Id.ToString()),
-                    new Claim(ClaimTypes.Role, usuario.Rol)
-                };
+                bool passwordValida = false;
 
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                // Intentar verificar con BCrypt primero (nuevo método)
+                try
+                {
+                    passwordValida = BCrypt.Net.BCrypt.Verify(Password, usuario.Contraseña);
+                }
+                catch (BCrypt.Net.SaltParseException)
+                {
+                    // Si falla, es porque la contraseña está en SHA256 (método antiguo)
+                    // Verificar con SHA256 como fallback
+                    string passwordHashSHA256 = HashPassword(Password);
+                    passwordValida = usuario.Contraseña == passwordHashSHA256;
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity));
+                    // Si la contraseña es correcta, actualizarla a BCrypt
+                    if (passwordValida)
+                    {
+                        usuario.Contraseña = BCrypt.Net.BCrypt.HashPassword(Password);
+                        await _context.SaveChangesAsync();
+                    }
+                }
 
-                return RedirectToAction("Welcome", "Chat");
+                if (passwordValida)
+                {
+                    var claims = new List<Claim> {
+                        new Claim(ClaimTypes.Name, usuario.Nombre),
+                        new Claim(ClaimTypes.Email, usuario.Email),
+                        new Claim("UsuarioId", usuario.Id.ToString()),
+                        new Claim(ClaimTypes.Role, usuario.Rol)
+                    };
+
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity));
+
+                    return RedirectToAction("Welcome", "Chat");
+                }
             }
 
             ModelState.AddModelError("", "Credenciales inválidas. Inténtalo de nuevo.");

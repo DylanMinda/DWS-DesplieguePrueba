@@ -100,4 +100,23 @@
             handleSend();
         }
     });
+
+    // Botón de imagen - trigger file input
+    const imageBtn = document.getElementById('imageBtn');
+    const imageInput = document.getElementById('imageInput');
+
+    if (imageBtn && imageInput) {
+        imageBtn.addEventListener('click', () => {
+            imageInput.click();
+        });
+
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                console.log('Imagen seleccionada:', file.name);
+                // TODO: Implementar subida de imagen al servidor
+                alert('Funcionalidad de subida de imagen en desarrollo');
+            }
+        });
+    }
 });
