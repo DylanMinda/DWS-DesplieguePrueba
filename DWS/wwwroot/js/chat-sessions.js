@@ -54,15 +54,20 @@ function displaySessions(sessions) {
 
 // Create new chat session
 async function startNewChat() {
+    console.log('🔵 startNewChat() llamada');
     try {
+        console.log('📡 Enviando request a /Chat/CreateSession...');
         const response = await fetch('/Chat/CreateSession', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify("Nuevo Chat")
         });
 
+        console.log('📥 Response status:', response.status);
+
         if (response.ok) {
             const data = await response.json();
+            console.log('✅ Sesión creada:', data);
             currentSessionId = data.sessionId;
 
             // Clear chat messages
@@ -80,9 +85,12 @@ async function startNewChat() {
 
             // Reload sessions list
             await loadUserSessions();
+            console.log('✅ Nueva conversación creada exitosamente');
+        } else {
+            console.error('❌ Error en response:', response.statusText);
         }
     } catch (error) {
-        console.error('Error creating session:', error);
+        console.error('❌ Error creating session:', error);
     }
 }
 
