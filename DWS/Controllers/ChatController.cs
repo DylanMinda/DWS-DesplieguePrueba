@@ -88,6 +88,7 @@ namespace DWS.Controllers
             var n8nUrl = $"{n8nUrlBase}?chatInput={Uri.EscapeDataString(chatInput ?? "")}&usuario={Uri.EscapeDataString(User.Identity.Name ?? "")}";
 
             using var client = new HttpClient();
+            client.Timeout = TimeSpan.FromMinutes(5); // Aumentar tiempo de espera a 5 minutos
             using var content = new MultipartFormDataContent();
 
             // Añadir imagen si existe (solo la imagen va en el cuerpo multipart)
