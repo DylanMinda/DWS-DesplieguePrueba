@@ -3,7 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using MedIQ_Modelos;
 using Microsoft.AspNetCore.DataProtection;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions { Args = args });
+
+// Fix for Render/inotify limit: Disable configuration reload on change
+builder.Configuration.Sources.Clear();
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: false);
+builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: false);
+builder.Configuration.AddEnvironmentVariables();
+if (args != null) builder.Configuration.AddCommandLine(args);
 
 // --- 1. CONFIGURACIÓN DEL SERVIDOR (RENDER) ---
 var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
