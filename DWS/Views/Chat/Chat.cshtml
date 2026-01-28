@@ -41,50 +41,14 @@
                         <h2>Asistente Médico IA</h2>
                         <small id="chatCategory">@(string.IsNullOrEmpty(category) ? "Conversación general" : category)</small>
                     </div>
+                    <button class="header-menu-btn" onclick="showMainMenu()" title="Volver al menú principal">
+                        🏠 Menú
+                    </button>
                 </div>
             </div>
 
             <div class="chat-messages" id="chatMessages">
-                <div class="message bot">
-                    <div class="message-avatar">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <circle cx="12" cy="12" r="10" />
-                        </svg>
-                    </div>
-                    <div class="message-content">
-                        ¡Hola! Soy tu asistente de medicación. Estoy aquí para ayudarte con información sobre medicamentos, tratamientos y salud. ¿En qué puedo ayudarte hoy?
-                    </div>
-                </div>
-
-                @if (!string.IsNullOrEmpty(category))
-                {
-                    <div class="questions-container">
-                        <h3>Preguntas frecuentes:</h3>
-                        <div class="questions-grid" id="suggestedQuestions">
-                            @if (category == "medicamentos")
-                            {
-                                <div class="question-card" onclick="sendQuestion(this)">¿Cuál es la dosis recomendada de ibuprofeno?</div>
-                                <div class="question-card" onclick="sendQuestion(this)">¿Para qué sirve la amoxicilina?</div>
-                                <div class="question-card" onclick="sendQuestion(this)">¿Cuáles son los efectos secundarios del paracetamol?</div>
-                                <div class="question-card" onclick="sendQuestion(this)">¿Cómo debo almacenar mis medicamentos?</div>
-                            }
-                            else if (category == "interacciones")
-                            {
-                                <div class="question-card" onclick="sendQuestion(this)">¿Puedo tomar ibuprofeno con aspirina?</div>
-                                <div class="question-card" onclick="sendQuestion(this)">¿Qué medicamentos no debo mezclar con alcohol?</div>
-                                <div class="question-card" onclick="sendQuestion(this)">¿Los antibióticos interactúan con anticonceptivos?</div>
-                                <div class="question-card" onclick="sendQuestion(this)">¿Qué alimentos evitar con ciertos medicamentos?</div>
-                            }
-                            else if (category == "tratamientos")
-                            {
-                                <div class="question-card" onclick="sendQuestion(this)">¿Cuánto dura un tratamiento con antibióticos?</div>
-                                <div class="question-card" onclick="sendQuestion(this)">¿Qué hacer si olvido una dosis?</div>
-                                <div class="question-card" onclick="sendQuestion(this)">¿Cuándo puedo dejar un tratamiento?</div>
-                                <div class="question-card" onclick="sendQuestion(this)">¿Cómo seguir correctamente un tratamiento crónico?</div>
-                            }
-                        </div>
-                    </div>
-                }
+                <!-- El mensaje de bienvenida y el menú se cargarán aquí desde JavaScript -->
             </div>
 
             <div class="loading-indicator" id="loadingIndicator">

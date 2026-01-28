@@ -76,18 +76,12 @@ async function startNewChat() {
             console.log('✅ Sesión creada:', data);
             currentSessionId = data.sessionId;
 
-            // Clear chat messages
-            const chatMessages = document.getElementById('chatMessages');
-            chatMessages.innerHTML = `
-                <div class="message bot">
-                    <div class="message-avatar">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" /></svg>
-                    </div>
-                    <div class="message-content">
-                        ¡Hola! Soy tu asistente de medicación. ¿En qué puedo ayudarte hoy?
-                    </div>
-                </div>
-            `;
+            // Trigger the structured welcome flow
+            if (typeof startChatbotFlow === 'function') {
+                startChatbotFlow();
+            } else {
+                appendMessage('¡Hola! Soy tu asistente de medicación. ¿En qué puedo ayudarte hoy?', 'bot');
+            }
 
             // Reload sessions list
             await loadUserSessions();
@@ -124,12 +118,16 @@ async function switchSession(sessionId) {
             chatMessages.innerHTML = '';
 
             if (mensajes.length === 0) {
-                // Show welcome message if conversation is empty
-                appendMessage('¡Hola! Soy tu asistente de medicación. ¿En qué puedo ayudarte hoy?', 'bot');
+                // Trigger the structured welcome flow if conversation is empty
+                if (typeof startChatbotFlow === 'function') {
+                    startChatbotFlow();
+                } else {
+                    appendMessage('¡Hola! Soy tu asistente de medicación. ¿En qué puedo ayudarte hoy?', 'bot');
+                }
             } else {
                 mensajes.forEach(msg => {
                     console.log('➕ Agregando mensaje:', msg.texto.substring(0, 50) + '...');
-                    appendMessage(msg.texto, msg.esIA ? 'bot' : 'user');
+                    appendMessage(msg.texto, msg.esIA ? 'bot' : 'user', msg.imagenUrl);
                 });
             }
             console.log('✅ Mensajes cargados exitosamente');
@@ -176,7 +174,7 @@ async function deleteConversation(sessionId, event) {
 }
 
 // Save message to database
-async function saveMessageToSession(texto, esIA) {
+async function saveMessageToSession(texto, esIA, imagenUrl = null) {
     if (!currentSessionId) {
         // Create session if doesn't exist
         const response = await fetch('/Chat/CreateSession', {
@@ -199,7 +197,7 @@ async function saveMessageToSession(texto, esIA) {
                 SessionId: currentSessionId,
                 Texto: texto,
                 EsIA: esIA,
-                ImagenUrl: null
+                ImagenUrl: imagenUrl
             })
         });
     } catch (error) {

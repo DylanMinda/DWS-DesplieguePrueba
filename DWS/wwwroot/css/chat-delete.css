@@ -1,17 +1,18 @@
-/* Delete Conversation Button */
+/* Delete Conversation Button - Simple Student Design */
+
 .delete-conversation-btn {
     position: absolute;
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(239, 68, 68, 0.1);
+    background-color: rgba(220, 53, 69, 0.1);
     border: none;
-    border-radius: 6px;
+    border-radius: 5px;
     padding: 6px;
     cursor: pointer;
     opacity: 0;
-    transition: all 0.3s ease;
-    color: #ef4444;
+    transition: opacity 0.2s;
+    color: #dc3545;
 }
 
 .conversation-item:hover .delete-conversation-btn {
@@ -19,8 +20,7 @@
 }
 
 .delete-conversation-btn:hover {
-    background: rgba(239, 68, 68, 0.2);
-    transform: translateY(-50%) scale(1.1);
+    background-color: rgba(220, 53, 69, 0.2);
 }
 
 .delete-conversation-btn svg {
@@ -30,5 +30,4 @@
 .conversation-item {
     position: relative;
     padding-right: 40px;
-    /* Make room for delete button */
 }

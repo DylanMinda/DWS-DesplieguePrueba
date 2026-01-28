@@ -38,44 +38,80 @@ namespace DWS.Controllers
             return View();
         }
 
-        // Acción para procesar el mensaje (aquí se conectará con n8n)
+        // Acción para procesar el mensaje (con soporte para imágenes)
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> SendMessage([FromBody] Mensaje mensaje)
+        public async Task<IActionResult> SendMessage(string chatInput, IFormFile? image)
         {
             // 1. Detección de riesgo (Alertas Preventivas RF.APL.04)
-            string alerta = DetectarRiesgo(mensaje.Texto);
+            string? alerta = DetectarRiesgo(chatInput);
 
             // 2. Detección de solicitudes de diagnóstico médico
             if (alerta == null)
             {
-                alerta = DetectarDiagnostico(mensaje.Texto);
+                alerta = DetectarDiagnostico(chatInput);
             }
 
-            // Lee la URL desde las variables de entorno de Render
-            string n8nUrl = _configuration["N8N_CHAT_URL"];
+            // Procesa la imagen si existe
+            string? imagenPathUrl = null;
+            if (image != null && image.Length > 0)
+            {
+                try
+                {
+                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                    if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+                    string fileName = Guid.NewGuid().ToString() + "_" + image.FileName;
+                    string filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await image.CopyToAsync(stream);
+                    }
+                    imagenPathUrl = "/uploads/" + fileName;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error guardando imagen: " + ex.Message);
+                }
+            }
+
+            // Lee la URL desde las variables de entorno o appsettings.json
+            string? n8nUrlBase = _configuration["N8N_CHAT_URL"];
+
+            if (string.IsNullOrEmpty(n8nUrlBase))
+            {
+                return Json(new { texto = "Error: La URL de n8n no está configurada.", esIA = true, alerta = alerta, imagenUrl = imagenPathUrl });
+            }
+
+            // Construir la URL con parámetros de consulta para asegurar que n8n los capture correctamente
+            var n8nUrl = $"{n8nUrlBase}?chatInput={Uri.EscapeDataString(chatInput ?? "")}&usuario={Uri.EscapeDataString(User.Identity.Name ?? "")}";
 
             using var client = new HttpClient();
-            var payload = new
+            using var content = new MultipartFormDataContent();
+
+            // Añadir imagen si existe (solo la imagen va en el cuerpo multipart)
+            if (image != null)
             {
-                chatInput = mensaje.Texto,
-                usuario = User.Identity.Name
-            };
+                var fileStream = image.OpenReadStream();
+                var fileContent = new StreamContent(fileStream);
+                fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(image.ContentType);
+                content.Add(fileContent, "data", image.FileName); 
+            }
 
             try
             {
-                var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+                // Realizar el POST. Si hay contenido imagen, lo enviamos; si no, enviamos content vacío
+                // pero n8n leerá los textos de la URL.
                 var response = await client.PostAsync(n8nUrl, content);
                 var respuestaDelAgente = await response.Content.ReadAsStringAsync();
 
-                // Devolvemos tanto la respuesta de la IA como la posible alerta
-                return Json(new { texto = respuestaDelAgente, esIA = true, alerta = alerta });
+                // Devolvemos la respuesta real de la IA y la URL de la imagen para el historial
+                return Json(new { texto = respuestaDelAgente, esIA = true, alerta = alerta, imagenUrl = imagenPathUrl });
             }
             catch (Exception ex)
             {
-                // FALLBACK DE SEGURIDAD:
-                // Incluso si la IA falla, debemos mostrar la alerta si existe.
-                return Json(new { texto = "Error de comunicación con el Agente: " + ex.Message, esIA = true, alerta = alerta });
+                return Json(new { texto = "Error de comunicación con n8n: " + ex.Message, esIA = true, alerta = alerta, imagenUrl = imagenPathUrl });
             }
         }
 
@@ -100,7 +136,7 @@ namespace DWS.Controllers
             {
                 if (mensaje.Contains(palabra))
                 {
-                    return "⚠️ PRECAUCIÓN: Detectamos que tu consulta implica riesgos de salud graves o interacciones peligrosas. " +
+                    return "PRECAUCIÓN: Detectamos que tu consulta implica riesgos de salud graves o interacciones peligrosas. " +
                            "Recuerda que este sistema NO reemplaza a un médico. Si tienes síntomas graves, acude a urgencias inmediatamente.";
                 }
             }
@@ -124,7 +160,7 @@ namespace DWS.Controllers
             {
                 if (mensaje.Contains(palabra))
                 {
-                    return "🩺 Lo siento, no puedo realizar diagnósticos médicos. " +
+                    return "Lo siento, no puedo realizar diagnósticos médicos. " +
                            "MedIQ es una herramienta educativa sobre medicamentos y tratamientos, " +
                            "pero NO puede diagnosticar enfermedades ni evaluar síntomas. " +
                            "Si tienes molestias o síntomas, por favor consulta con un médico profesional.";

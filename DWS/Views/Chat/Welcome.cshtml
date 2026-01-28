@@ -1,65 +1,101 @@
 ﻿@{
-    ViewData["Title"] = "Bienvenido";
+    ViewData["Title"] = "Dashboard Educativo - MedIQ";
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/welcome.css" />
+    <style>
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        .pillar-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #eee;
+            text-decoration: none;
+            color: inherit;
+        }
+        .pillar-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 20px rgba(91, 123, 213, 0.15);
+            border-color: #5b7bd5;
+        }
+        .pillar-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        .pillar-card h3 {
+            color: #5b7bd5;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        .pillar-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+        .learn-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #5b7bd5;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .hero-banner {
+            background: linear-gradient(135deg, #5b7bd5 0%, #3a56a6 100%);
+            color: white;
+            padding: 50px 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .hero-banner h1 { margin-bottom: 15px; }
+        .hero-banner p { opacity: 0.9; font-size: 1.1rem; }
+    </style>
 }
 
 <div class="welcome-container">
-    <div class="welcome-header">
-        <h1>Asistente Inteligente de Medicación</h1>
-        <p>Tu compañero confiable para información sobre medicamentos, tratamientos y salud. Selecciona un tema para comenzar.</p>
+    <div class="hero-banner">
+        <h1>Centro de Concientización MedIQ</h1>
+        <p>Aprende sobre el uso responsable de medicamentos y la salud global bajo el enfoque One Health.</p>
     </div>
 
-    <div class="categories-grid">
-        <a asp-action="Chat" asp-route-category="medicamentos" class="category-card">
-            <div class="category-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4.5 5.5L19.5 5.5L19.5 18.5C19.5 19.6046 18.6046 20.5 17.5 20.5L6.5 20.5C5.39543 20.5 4.5 19.6046 4.5 18.5L4.5 5.5Z" stroke="white" stroke-width="2" />
-                    <path d="M8 9L16 9M8 13L16 13M8 17L12 17" stroke="white" stroke-width="2" stroke-linecap="round" />
-                </svg>
-            </div>
-            <h3>Información de Medicamentos</h3>
-            <p>Consulta sobre composición, indicaciones, dosis y efectos secundarios de medicamentos específicos</p>
+    <div class="dashboard-grid">
+        <a asp-action="Chat" asp-route-category="medicacion" class="pillar-card">
+            <div class="pillar-icon">💊</div>
+            <h3>Uso Responsable</h3>
+            <p>La automedicación sin control puede ser peligrosa. Aprende por qué cada dosis y horario cuenta para tu seguridad.</p>
+            <span class="learn-more">Profundizar en el Chat →</span>
         </a>
 
-        <a asp-action="Chat" asp-route-category="interacciones" class="category-card">
-            <div class="category-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="8" cy="8" r="3" stroke="white" stroke-width="2" />
-                    <circle cx="16" cy="16" r="3" stroke="white" stroke-width="2" />
-                    <path d="M10.5 10L13.5 14" stroke="white" stroke-width="2" stroke-linecap="round" />
-                </svg>
-            </div>
-            <h3>Interacciones Medicamentosas</h3>
-            <p>Verifica posibles interacciones entre medicamentos, alimentos y condiciones médicas</p>
+        <a asp-action="Chat" asp-route-category="resistencia" class="pillar-card">
+            <div class="pillar-icon">🛡️</div>
+            <h3>Resistencia Antimicrobiana</h3>
+            <p>El uso incorrecto de antibióticos crea bacterias invencibles. Descubre cómo proteger la eficacia de la medicina moderna.</p>
+            <span class="learn-more">Profundizar en el Chat →</span>
         </a>
 
-        <a asp-action="Chat" asp-route-category="tratamientos" class="category-card">
-            <div class="category-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L12 22M2 12L22 12" stroke="white" stroke-width="2" stroke-linecap="round" />
-                    <circle cx="12" cy="12" r="8" stroke="white" stroke-width="2" />
-                </svg>
-            </div>
-            <h3>Tratamientos y Terapias</h3>
-            <p>Aprende sobre opciones de tratamiento, protocolos médicos y cuidados específicos</p>
+        <a asp-action="Chat" asp-route-category="mitos" class="pillar-card">
+            <div class="pillar-icon">⚖️</div>
+            <h3>Mitos y Realidades</h3>
+            <p>Desmitifica creencias populares sobre productos naturales y recomendaciones de terceros. La ciencia es tu mejor guía.</p>
+            <span class="learn-more">Profundizar en el Chat →</span>
         </a>
     </div>
 
-    <div class="questions-container">
-        @if (User.Identity.IsAuthenticated)
-        {
-            <a asp-action="Chat" asp-controller="Chat" class="btn btn-primary">
-                Comenzar Conversación Libre
-            </a>
-        }
-        else
-        {
-            <a asp-action="Login" asp-controller="Account" class="btn btn-primary">
-                Inicia sesión para comenzar
-            </a>
-        }
+    <div style="margin-top: 50px; text-align: center;">
+        <a asp-action="Chat" class="btn btn-primary" style="padding: 15px 30px; font-size: 1.1rem; border-radius: 30px;">
+            Ir directamente al Asistente IA
+        </a>
     </div>
 </div>
