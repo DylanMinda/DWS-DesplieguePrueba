@@ -20,6 +20,7 @@ const chatbotConfig = {
             preguntas: [
                 {
                     q: "¿En qué consiste exactamente la automedicación?",
+                    a: "La automedicación es el uso de medicamentos por iniciativa propia sin receta médica. Puede ser peligroso si no se hace bajo supervisión profesional, ya que puede enmascarar enfermedades reales.",
                     sub: [
                         { q: "¿Qué diferencia hay entre automedicación y autocuidado?", a: "El autocuidado es elegir hábitos saludables (dieta, ejercicio), mientras que la automedicación es usar fármacos sin receta para tratar síntomas. El autocuidado previene, la automedicación mal hecha pone en riesgo." },
                         { q: "¿Cuáles son los riesgos de ocultar síntomas graves?", a: "Automedicarse para un dolor de estómago fuerte podría 'tapar' una apendicitis. Al no sentir el dolor, no buscas ayuda profesional y una condición tratable puede volverse mortal." },
@@ -28,6 +29,7 @@ const chatbotConfig = {
                 },
                 {
                     q: "¿Qué elementos debo revisar al leer una receta o etiqueta médica?",
+                    a: "Leer la receta es clave para entender la dosis exacta, la frecuencia y la duración total del tratamiento, evitando errores que comprometan tu recuperación.",
                     sub: [
                         { q: "¿Dónde encuentro la fecha de vencimiento y por qué importa?", a: "Suele estar en el borde del blister o la caja. Tomar medicina vencida es peligroso porque los componentes químicos se degradan y pueden volverse tóxicos o perder su efecto." },
                         { q: "¿Qué significa 'Vía de Administración' (Oral, Tópica, etc.)?", a: "Indica cómo debe entrar el fármaco al cuerpo. Si pones gotas para el oído en el ojo, o tragas una pastilla que era sublingual, el medicamento no funcionará o causará daño." },
@@ -36,6 +38,7 @@ const chatbotConfig = {
                 },
                 {
                     q: "¿Por qué es fundamental respetar los horarios indicados?",
+                    a: "Respetar los horarios garantiza que el medicamento mantenga niveles estables en tu sangre durante todo el día, asegurando que el tratamiento realmente funcione.",
                     sub: [
                         { q: "¿Es lo mismo '3 veces al día' que 'cada 8 horas'?", a: "No. '3 veces' puede ser aleatorio (desayuno, almuerzo, cena). 'Cada 8 horas' es estricto para mantener el nivel de fármaco estable en sangre durante las 24 horas del día." },
                         { q: "¿Qué es la 'Ventana Terapéutica' de un medicamento?", a: "Es el rango exacto de dosis donde el fármaco cura. Si bajas de ahí no sirve; si subes de ahí se vuelve veneno para tus órganos (riñón o hígado)." },
@@ -44,6 +47,7 @@ const chatbotConfig = {
                 },
                 {
                     q: "¿Qué debo hacer ante el olvido de una dosis?",
+                    a: "Ante un olvido, lo más importante es no entrar en pánico. Debes evaluar cuánto tiempo ha pasado, pero recuerda: **nunca tomes doble dosis**.",
                     sub: [
                         { q: "¿Existe alguna 'regla de tiempo' para tomarla tarde?", a: "Generalmente, si te acuerdas antes de la mitad del tiempo para la siguiente dosis, tómala. Si falta poco para la siguiente, es mejor esperar y seguir con el horario normal." },
                         { q: "¿Por qué NUNCA debo duplicar la dosis para compensar?", a: "Duplicar la dosis NO arregla el olvido, solo sobrecarga tus riñones e hígado con una cantidad tóxica que tu cuerpo no puede procesar de golpe." },
@@ -59,6 +63,7 @@ const chatbotConfig = {
             preguntas: [
                 {
                     q: "¿Qué es la resistencia bacteriana a los antibióticos?",
+                    a: "La resistencia bacteriana ocurre cuando las bacterias aprenden a sobrevivir a los antibióticos. Esto hace que infecciones comunes vuelvan a ser peligrosas y difíciles de tratar.",
                     sub: [
                         { q: "¿Cómo hacen las bacterias para volverse 'superbacterias'?", a: "Las bacterias mutan y desarrollan 'escudos' o bombas para expulsar el antibiótico. Al reproducirse, pasan este 'superpoder' a otras bacterias, creando una familia resistente." },
                         { q: "¿Cuál es la diferencia entre resistencia natural y adquirida?", a: "La natural es propia de la bacteria. La adquirida ocurre por culpa nuestra: al usar mal los antibióticos obligamos a la bacteria a aprender cómo sobrevivir." },
@@ -67,6 +72,7 @@ const chatbotConfig = {
                 },
                 {
                     q: "¿Los antibióticos sirven para tratar la gripe o el resfriado común?",
+                    a: "Los antibióticos NO sirven para combatir virus como la gripe. Usarlos sin necesidad solo daña tu flora intestinal y ayuda a crear bacterias más resistentes.",
                     sub: [
                         { q: "¿Por qué un antibiótico no mata a un virus?", a: "Los antibióticos atacan la estructura física de la bacteria (su pared). Los virus no tienen esa estructura, por lo que el antibiótico simplemente no tiene nada a qué atacar." },
                         { q: "¿Qué pasa con mi flora intestinal si tomo antibióticos sin necesidad?", a: "El antibiótico mata a las bacterias 'buenas' de tu vientre. Esto causa diarreas, debilita tus defensas y deja el camino libre a hongos y bacterias malas." },
@@ -75,6 +81,7 @@ const chatbotConfig = {
                 },
                 {
                     q: "¿Es seguro interrumpir el tratamiento de antibióticos antes de tiempo?",
+                    a: "Nunca dejes un tratamiento de antibióticos a la mitad. Aunque te sientas mejor, debes terminar la caja para asegurar que no sobreviva ninguna bacteria fuerte.",
                     sub: [
                         { q: "¿Por qué me siento bien antes de terminar la caja?", a: "Porque el antibiótico mató a las bacterias más débiles primero. Las que quedan vivas son las más fuertes y peligrosas; si dejas de tomarlo, esas sobrevivientes te volverán a enfermar peor." },
                         { q: "¿Qué sucede con las bacterias que 'sobreviven' al corte?", a: "Se vuelven líderes de una nueva infección que ya sabe cómo resistir a ese antibiótico. La próxima vez que lo tomes, ya no te servirá de nada." },
@@ -83,6 +90,7 @@ const chatbotConfig = {
                 },
                 {
                     q: "¿Cómo afecta el mal uso de antibióticos a la salud global (One Health)?",
+                    a: "El mal uso de fármacos afecta a humanos, animales y al medio ambiente por igual. Es un problema global que genera un entorno lleno de bacterias resistentes.",
                     sub: [
                         { q: "¿Qué tiene que ver la salud de los animales con la mía?", a: "Si se usan antibióticos para engordar pollos o vacas, las bacterias de esos animales se vuelven resistentes y saltan a los humanos a través de la comida o el contacto." },
                         { q: "¿Cómo llegan los antibióticos de la granja a nuestras mesas?", a: "A través del agua contaminada con desechos animales y el consumo de carne mal cocida que contiene bacterias que ya aprendieron a ser súper resistentes." },
@@ -98,6 +106,7 @@ const chatbotConfig = {
             preguntas: [
                 {
                     q: "¿Puedo usar medicamentos recomendados por otras personas?",
+                    a: "Lo que le sirvió a un conocido podría ser tóxico para ti. Cada cuerpo es único y un fármaco 'seguro' para otro puede causarte una reacción grave.",
                     sub: [
                         { q: "¿Por qué lo que le sirve a un vecino me puede hacer daño a mí?", a: "Tu genética, historial de alergias y el estado de tus riñones son un mundo aparte. Un fármaco 'seguro' para tu vecino puede darte un ataque al corazón o insuficiencia renal a ti." },
                         { q: "¿Cómo influye el peso y la edad en la dosis de cada persona?", a: "Un niño o un anciano procesan los fármacos mucho más lento. Darle una dosis de adulto a un niño puede causar daños cerebrales o la muerte por sobredosis." },
@@ -106,6 +115,7 @@ const chatbotConfig = {
                 },
                 {
                     q: "¿Son siempre inofensivos los productos naturales?",
+                    a: "Es un mito que 'Natural' significa inofensivo. Muchas plantas medicinales tienen químicos potentes que pueden dañar tu hígado si se usan mal.",
                     sub: [
                         { q: "¿Significa 'Natural' que no tiene efectos secundarios?", a: "¡No! El veneno de serpiente es natural. Muchas plantas medicinales causan toxicidad hepática grave si se consumen en dosis incorrectas." },
                         { q: "¿Pueden las hierbas anular el efecto de mis medicinas?", a: "Sí. Por ejemplo, la hierba de San Juan anula el efecto de muchos anticonceptivos y antidepresivos. Lo natural también es químico." },
@@ -114,6 +124,7 @@ const chatbotConfig = {
                 },
                 {
                     q: "¿Cuáles son las señales de una reacción adversa a un farmaco?",
+                    a: "Conocer las señales de una reacción adversa (como ronchas, picazón o falta de aire) te permite actuar rápido y evitar complicaciones vitales.",
                     sub: [
                         { q: "¿Cómo distingo un efecto secundario de una alergia?", a: "Un efecto secundario es 'esperado' (ej. sueño). Una alergia es una defensa extrema del cuerpo (ronchas, picazón, ojos hinchados) y es mucho más peligrosa." },
                         { q: "¿Qué es un choque anafiláctico y cómo detectarlo a tiempo?", a: "Es la reacción más grave: se cierra la garganta y baja la presión. Si te cuesta respirar tras una pastilla, es una emergencia vital de vida o muerte." },
@@ -122,6 +133,7 @@ const chatbotConfig = {
                 },
                 {
                     q: "¿Cuándo es indispensable acudir a un médico profesional?",
+                    a: "La consulta médica es la única forma de obtener un diagnóstico real. Este chat es educativo y nunca debe retrasar la atención profesional ante síntomas graves.",
                     sub: [
                         { q: "¿Qué síntomas de alerta requieren ir a urgencias ya mismo?", a: "Dolor de pecho, pérdida de visión, desmayos, fiebre que no baja o sangrados inusuales. No preguntes a un chat, ¡ve al hospital!" },
                         { q: "¿Por qué la receta médica es un documento de seguridad?", a: "La receta confirma que un experto analizó tu cuerpo y decidió que el beneficio de la medicina es mayor que el riesgo. Es tu escudo legal y de salud." },
@@ -219,27 +231,35 @@ function showSubMenu(id) {
 }
 
 // Mostrar el menú de cascada de sub-preguntas (Nivel 3)
-function showCascadeMenu(catId, qIndex) {
+async function showCascadeMenu(catId, qIndex) {
     const category = chatbotConfig.menu.find(m => m.id === catId);
     const mainQuestion = category.preguntas[qIndex];
 
-    let cascadeHtml = `<div class="menu-container">
-        <h4 style="color: #444; margin-bottom: 5px;">Seleccionaste:</h4>
-        <p style="font-style: italic; color: #555; margin-bottom: 15px;">"${mainQuestion.q}"</p>
-        <p style="font-weight: bold; color: #5b7bd5; margin-bottom: 10px;">Elige una profundidad de información:</p>
-        <div class="menu-grid">`;
+    // 1. Añadimos el mensaje del usuario y la respuesta principal
+    appendMessage(mainQuestion.q, 'user');
+    await saveMessageToSession(mainQuestion.q, false);
 
-    mainQuestion.sub.forEach((subP, sIndex) => {
-        const levels = ["🟢 Nivel Básico", "🟡 Nivel Intermedio", "🔴 Nivel Avanzado"];
-        cascadeHtml += `<button class="question-btn" style="text-align: left;" onclick="answerQuestion('${catId}', ${qIndex}, ${sIndex})">
-            <div style="font-weight: bold; font-size: 0.85em; margin-bottom: 4px;">${levels[sIndex]}</div>
-            ${subP.q}
-        </button>`;
-    });
+    appendMessage(mainQuestion.a, 'bot');
+    await saveMessageToSession(mainQuestion.a, true);
 
-    cascadeHtml += `<button class="back-btn" onclick="showSubMenu('${catId}')">⬅️ Cambiar pregunta principal</button>
-    </div></div>`;
-    appendMessage(cascadeHtml, 'bot');
+    // 2. Después de responder, mostramos el menú de los niveles
+    setTimeout(() => {
+        let cascadeHtml = `<div class="menu-container">
+            <p style="font-weight: bold; color: #5b7bd5; margin-bottom: 10px;">¿Quieres profundizar más sobre este tema?</p>
+            <div class="menu-grid">`;
+
+        mainQuestion.sub.forEach((subP, sIndex) => {
+            const levels = ["🟢 Nivel Básico", "🟡 Nivel Intermedio", "🔴 Nivel Avanzado"];
+            cascadeHtml += `<button class="question-btn" style="text-align: left;" onclick="answerQuestion('${catId}', ${qIndex}, ${sIndex})">
+                <div style="font-weight: bold; font-size: 0.85em; margin-bottom: 4px;">${levels[sIndex]}</div>
+                ${subP.q}
+            </button>`;
+        });
+
+        cascadeHtml += `<button class="back-btn" onclick="showSubMenu('${catId}')">⬅️ Ver otras preguntas de este tema</button>
+        </div></div>`;
+        appendMessage(cascadeHtml, 'bot');
+    }, 1200);
 }
 
 // Responder a una pregunta específica
@@ -317,6 +337,32 @@ function isMedicalQuery(text) {
         const regex = new RegExp(`\\b${k}\\b`, 'i');
         return regex.test(lowerText);
     });
+}
+
+// NUEVA FUNCIÓN: Busca sugerencias relevantes en el menú basadas en la respuesta de la IA
+function findSmartSuggestion(aiText) {
+    const text = aiText.toLowerCase();
+
+    // Lista de palabras clave por categoría para búsqueda rápida
+    for (const cat of chatbotConfig.menu) {
+        if (cat.keywords && cat.keywords.some(k => text.includes(k.toLowerCase()))) {
+            // Si la respuesta de la IA menciona una categoría, sugerimos la primera pregunta de esa categoría
+            // o una pregunta específica si encontramos coincidencia más exacta
+            for (let i = 0; i < cat.preguntas.length; i++) {
+                const qObj = cat.preguntas[i];
+                // Si la IA ya respondió algo muy parecido a la pregunta, saltamos
+                if (text.includes(qObj.q.toLowerCase().substring(0, 20))) continue;
+
+                return {
+                    q: qObj.q,
+                    catId: cat.id,
+                    qIndex: i,
+                    sIndex: 0 // Sugerimos nivel básico por defecto
+                };
+            }
+        }
+    }
+    return null;
 }
 
 // Variables globales para manejo de consultas pendientes de IA
@@ -447,7 +493,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 appendMessage(data.texto || "Lo siento, no pude procesar eso.", 'bot');
                 await saveMessageToSession(data.texto, true);
 
-                setTimeout(() => showSafetyNet(), 1500);
+                // Sugerencias Inteligentes después de la respuesta de la IA
+                setTimeout(() => {
+                    const suggestion = findSmartSuggestion(data.texto || "");
+                    if (suggestion) {
+                        const suggestionHtml = `
+                            <div class="menu-container" style="border: 1px dashed var(--blue-300); background: var(--blue-50);">
+                                <p style="font-size: 0.85em; font-weight: bold; color: var(--blue-700); margin-bottom: 8px;">💡 Pregunta relacionada:</p>
+                                <button class="question-btn" style="text-align: left;" onclick="answerQuestion('${suggestion.catId}', ${suggestion.qIndex}, ${suggestion.sIndex})">
+                                    ${suggestion.q}
+                                </button>
+                            </div>`;
+                        appendMessage(suggestionHtml, 'bot');
+                    }
+                    showSafetyNet();
+                }, 2000);
             }
         } catch (error) {
             console.error("Error:", error);

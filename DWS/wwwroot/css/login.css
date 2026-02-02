@@ -12,20 +12,20 @@
     margin-bottom: 30px;
 }
 
-    .form-header svg {
-        margin-bottom: 15px;
-    }
+.form-header svg {
+    margin-bottom: 15px;
+}
 
-    .form-header h1 {
-        color: var(--primary-color);
-        margin-bottom: 10px;
-        font-size: 2rem;
-    }
+.form-header h1 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-size: 2rem;
+}
 
-    .form-header p {
-        color: var(--text-light);
-        font-size: 1rem;
-    }
+.form-header p {
+    color: var(--text-light);
+    font-size: 1rem;
+}
 
 .form-group {
     margin-bottom: 20px;
@@ -47,11 +47,11 @@
     transition: all 0.3s;
 }
 
-    .form-input:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
 
 .form-footer {
     text-align: center;
@@ -59,15 +59,15 @@
     color: var(--text-light);
 }
 
-    .form-footer a {
-        color: var(--primary-color);
-        text-decoration: none;
-        font-weight: 600;
-    }
+.form-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
 
-        .form-footer a:hover {
-            text-decoration: underline;
-        }
+.form-footer a:hover {
+    text-decoration: underline;
+}
 
 @media (max-width: 768px) {
     .form-container {

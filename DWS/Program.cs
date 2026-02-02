@@ -49,6 +49,10 @@ builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(Directory.GetCurrentDirectory(), "keys")))
     .SetApplicationName("MedIQ");
 
+// SERVICIOS PERSONALIZADOS
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<DWS.Services.IEmailService, DWS.Services.EmailService>();
+
 // --- 3. CONSTRUCCIÓN DE LA APLICACIÓN ---
 var app = builder.Build(); // <--- Ahora sí, todos los servicios están registrados
 

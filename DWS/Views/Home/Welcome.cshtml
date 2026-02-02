@@ -3,6 +3,7 @@
 }
 
 @section Styles {
+    <link rel="stylesheet" href="~/css/common.css" />
     <link rel="stylesheet" href="~/css/welcome.css" />
 }
 
@@ -20,29 +21,25 @@
             Bienvenido a <span class="gradient-text">MedIQ</span>
         </h1>
         <p class="hero-subtitle">
-            Tu asistente inteligente de información médica 🩺
+            Tu asistente inteligente de salud 🩺
         </p>
         <p class="hero-description">
-            Información confiable sobre medicamentos, tratamientos y salud al alcance de tu mano
+            Aprende sobre el uso responsable de medicamentos con nuestra tecnología de IA educativa.
         </p>
 
-        @* Auth buttons right after description *@
         <div class="hero-auth-buttons">
             @if (User.Identity.IsAuthenticated)
             {
-                <a asp-action="Instructions" asp-controller="Home" class="btn btn-primary btn-large">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    Comenzar Ahora
+                <a asp-action="Instructions" asp-controller="Home" class="btn btn-primary btn-lg">
+                    Comenzar Ahora 🚀
                 </a>
             }
             else
             {
-                <a asp-action="Login" asp-controller="Account" class="btn btn-primary btn-large">
+                <a asp-action="Login" asp-controller="Account" class="btn btn-primary btn-lg">
                     Iniciar Sesión
                 </a>
-                <a asp-action="Register" asp-controller="Account" class="btn btn-secondary btn-large">
+                <a asp-action="Register" asp-controller="Account" class="btn btn-outline btn-lg">
                     Crear Cuenta
                 </a>
             }
@@ -50,43 +47,35 @@
     </div>
 
     <div class="features-grid">
-        <div class="feature-card glass-card">
-            <div class="feature-icon">
-                💊
-            </div>
-            <h3>Información Precisa</h3>
-            <p>Datos sobre medicamentos</p>
+        <div class="feature-card">
+            <div class="feature-icon">💊</div>
+            <h3>Guía de Medicación</h3>
+            <p>Aprende dosis y precauciones.</p>
         </div>
 
-        <div class="feature-card glass-card">
-            <div class="feature-icon">
-                ⚡
-            </div>
-            <h3>Respuestas Rápidas</h3>
-            <p>Obtén información con IA</p>
+        <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3>Resistencia</h3>
+            <p>Todo sobre el uso de antibióticos.</p>
         </div>
 
-        <div class="feature-card glass-card">
-            <div class="feature-icon">
-                🛡️
-            </div>
-            <h3>Alertas de Seguridad</h3>
-            <p>Sistema de detección de riesgos en tiempo real</p>
+        <div class="feature-card">
+            <div class="feature-icon">⚖️</div>
+            <h3>Mitos y Realidades</h3>
+            <p>Desmentimos creencias populares.</p>
         </div>
 
-        <div class="feature-card glass-card">
-            <div class="feature-icon">
-                🎯
-            </div>
-            <h3>Fácil de Usar</h3>
-            <p>Interfaz intuitiva diseñada para todos</p>
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>IA Educativa</h3>
+            <p>Respuestas claras y seguras.</p>
         </div>
     </div>
 
-    <div class="info-banner glass-card">
+    <div class="info-banner">
         <div class="banner-icon">ℹ️</div>
         <div class="banner-content">
-            <strong>Importante:</strong> MedIQ es una herramienta educativa. No sustituye la consulta médica profesional.
+            <strong>Recuerda:</strong> MedIQ es una herramienta de orientación educativa y no sustituye el diagnóstico de un médico profesional.
         </div>
     </div>
 </div>

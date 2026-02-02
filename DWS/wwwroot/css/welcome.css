@@ -1,4 +1,6 @@
-﻿/* Welcome Page - Simple Student Design */
+﻿/* ========================================
+   WELCOME PAGE - MODERN YOUTH DESIGN
+   ======================================== */
 
 .welcome-container {
     min-height: 100vh;
@@ -6,33 +8,110 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
-    background-color: #5b7bd5;
+    padding: 1.5rem 1rem;
+    gap: 1.5rem;
 }
 
 /* Hero Section */
 .welcome-hero {
     text-align: center;
     max-width: 700px;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+}
+
+.hero-icon-wrapper {
+    margin-bottom: 1rem;
+}
+
+.floating-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: float 3s ease-in-out infinite;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.floating-icon svg {
+    width: 30px;
+    height: 30px;
+    color: white;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .hero-title {
     font-size: 2.5rem;
-    font-weight: bold;
-    color: white;
-    margin-bottom: 1rem;
+    font-weight: 800;
+    color: var(--blue-900);
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+    background-size: 200% auto;
 }
 
 .hero-subtitle {
-    font-size: 1.3rem;
-    color: white;
+    font-size: 1.5rem;
+    color: var(--blue-800);
     margin-bottom: 0.5rem;
+    font-weight: 600;
 }
 
 .hero-description {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    color: var(--gray-700);
+    line-height: 1.6;
     margin-bottom: 2rem;
 }
 
@@ -43,21 +122,68 @@
     flex-wrap: wrap;
 }
 
-.btn-large {
-    padding: 12px 30px;
-    font-size: 1.1rem;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: opacity 0.2s;
+.hero-auth-buttons .btn-large {
+    min-width: 180px;
 }
 
-.btn-large:hover {
-    opacity: 0.9;
+/* Features Grid */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    max-width: 1000px;
+    width: 100%;
+}
+
+.feature-card {
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.feature-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.feature-card h3 {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.feature-card p {
+    color: var(--text-light);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* CTA Section */
+.cta-section {
+    text-align: center;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn-large {
+    padding: 16px 40px;
+    font-size: 1.1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .btn-large svg {
@@ -65,49 +191,51 @@
     height: 18px;
 }
 
-/* Features Section */
-.features-section {
-    max-width: 900px;
+/* Info Banner */
+.info-banner {
+    max-width: 700px;
     width: 100%;
-}
-
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-}
-
-.feature-card {
-    background: white;
     padding: 1.5rem;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.9);
 }
 
-.feature-icon {
+.banner-icon {
     font-size: 2rem;
-    margin-bottom: 1rem;
+    flex-shrink: 0;
 }
 
-.feature-card h3 {
-    font-size: 1.2rem;
-    color: #333;
-    margin-bottom: 0.5rem;
+.banner-content {
+    color: var(--text-dark);
+    line-height: 1.6;
 }
 
-.feature-card p {
-    color: #666;
-    font-size: 0.95rem;
+.banner-content strong {
+    color: var(--primary-color);
 }
 
-/* Responsive */
+/* Responsive Design */
 @media (max-width: 768px) {
     .hero-title {
-        font-size: 2rem;
+        font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
     }
 
     .features-grid {
         grid-template-columns: 1fr;
+    }
+
+    .auth-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-large {
+        width: 100%;
     }
 }
