@@ -231,16 +231,18 @@ function showSubMenu(id) {
 }
 
 // Mostrar el menú de cascada de sub-preguntas (Nivel 3)
-async function showCascadeMenu(catId, qIndex) {
+async function showCascadeMenu(catId, qIndex, skipMessages = false) {
     const category = chatbotConfig.menu.find(m => m.id === catId);
     const mainQuestion = category.preguntas[qIndex];
 
-    // 1. Añadimos el mensaje del usuario y la respuesta principal
-    appendMessage(mainQuestion.q, 'user');
-    await saveMessageToSession(mainQuestion.q, false);
+    if (!skipMessages) {
+        // 1. Añadimos el mensaje del usuario y la respuesta principal
+        appendMessage(mainQuestion.q, 'user');
+        await saveMessageToSession(mainQuestion.q, false);
 
-    appendMessage(mainQuestion.a, 'bot');
-    await saveMessageToSession(mainQuestion.a, true);
+        appendMessage(mainQuestion.a, 'bot');
+        await saveMessageToSession(mainQuestion.a, true);
+    }
 
     // 2. Después de responder, mostramos el menú de los niveles
     setTimeout(() => {
@@ -249,9 +251,7 @@ async function showCascadeMenu(catId, qIndex) {
             <div class="menu-grid">`;
 
         mainQuestion.sub.forEach((subP, sIndex) => {
-            const levels = ["🟢 Nivel Básico", "🟡 Nivel Intermedio", "🔴 Nivel Avanzado"];
             cascadeHtml += `<button class="question-btn" style="text-align: left;" onclick="answerQuestion('${catId}', ${qIndex}, ${sIndex})">
-                <div style="font-weight: bold; font-size: 0.85em; margin-bottom: 4px;">${levels[sIndex]}</div>
                 ${subP.q}
             </button>`;
         });
@@ -281,7 +281,7 @@ async function answerQuestion(catId, qIndex, subIndex) {
         const afterAnswerHtml = `<div class="safety-net">
             <p>¿Qué deseas hacer ahora?</p>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <button class="mini-menu-btn" onclick="showCascadeMenu('${catId}', ${qIndex})">🔄 Ver otros niveles de esta pregunta</button>
+                <button class="mini-menu-btn" onclick="showCascadeMenu('${catId}', ${qIndex}, true)">🔄 Ver otros niveles de esta pregunta</button>
                 <button class="mini-menu-btn" onclick="showSubMenu('${catId}')">📑 Otra pregunta del tema</button>
                 <button class="mini-menu-btn" style="background: #f3f4f6;" onclick="showMainMenu()">🏠 Menú Principal</button>
             </div>
@@ -339,32 +339,6 @@ function isMedicalQuery(text) {
     });
 }
 
-// NUEVA FUNCIÓN: Busca sugerencias relevantes en el menú basadas en la respuesta de la IA
-function findSmartSuggestion(aiText) {
-    const text = aiText.toLowerCase();
-
-    // Lista de palabras clave por categoría para búsqueda rápida
-    for (const cat of chatbotConfig.menu) {
-        if (cat.keywords && cat.keywords.some(k => text.includes(k.toLowerCase()))) {
-            // Si la respuesta de la IA menciona una categoría, sugerimos la primera pregunta de esa categoría
-            // o una pregunta específica si encontramos coincidencia más exacta
-            for (let i = 0; i < cat.preguntas.length; i++) {
-                const qObj = cat.preguntas[i];
-                // Si la IA ya respondió algo muy parecido a la pregunta, saltamos
-                if (text.includes(qObj.q.toLowerCase().substring(0, 20))) continue;
-
-                return {
-                    q: qObj.q,
-                    catId: cat.id,
-                    qIndex: i,
-                    sIndex: 0 // Sugerimos nivel básico por defecto
-                };
-            }
-        }
-    }
-    return null;
-}
-
 // Variables globales para manejo de consultas pendientes de IA
 let pendingMessage = null;
 let pendingImage = null;
@@ -397,7 +371,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // La inicialización ahora la controla chat-sessions.js llamando a startChatbotFlow()
 
-    async function handleSend() {
+    window.handleSend = async function () {
         const message = messageInput.value.trim();
         const imageFile = imageInput.files[0];
 
@@ -461,11 +435,21 @@ document.addEventListener('DOMContentLoaded', function () {
         const message = pendingMessage;
         const imageFile = pendingImage;
 
-        // Reglas de formato para la IA
+        // Reglas de identidad y comportamiento para la IA
+        const identityRules = "\nTU IDENTIDAD: Eres MedIQ, un asistente experto para concientizar sobre el uso responsable de medicamentos. " +
+            "REGLA DE ORO: Solo responde preguntas relacionadas con medicina, salud, fármacos y bienestar. " +
+            "Si el usuario pregunta algo fuera de este tema (como matemáticas, historia, chistes o temas generales), declina amablemente y recuérdale que tu especialidad es el uso seguro de medicamentos.";
+
         const formatRules = "\nINSTRUCCIÓN DE FORMATO: Usa varios párrafos, saltos de línea y listas numeradas para que la información sea fácil de leer. No escribas todo en un solo bloque de texto.";
         const lengthInstruction = isShort ? " (Responde de forma muy breve y directa)" : " (Responde de forma detallada y educativa)";
 
-        const finalInput = message + lengthInstruction + formatRules;
+        // Nueva instrucción para preguntas de seguimiento dinámicas (Con restricciones éticas estrictas)
+        const suggestionsRule = "\n\nREGLA CRÍTICA DE SUGERENCIAS: Añade 2 sugerencias de preguntas cortas que el USUARIO podría hacerte a TI para profundizar. " +
+            "PROHIBIDO: No sugieras preguntas sobre dosis, horarios específicos de toma, recetas o cualquier recomendación médica directa. " +
+            "ENFOQUE: Sugiere temas sobre educación, riesgos de la automedicación, qué revisar en etiquetas o cuándo ir al médico. " +
+            "Usa exactamente este formato al final: '[SUG]: pregunta1 | pregunta2'";
+
+        const finalInput = message + identityRules + lengthInstruction + formatRules + suggestionsRule;
 
         loadingIndicator.classList.add('active');
         chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -490,24 +474,39 @@ document.addEventListener('DOMContentLoaded', function () {
                     await saveMessageToSession(data.alerta, true);
                 }
 
-                appendMessage(data.texto || "Lo siento, no pude procesar eso.", 'bot');
-                await saveMessageToSession(data.texto, true);
+                // Procesar texto y sugerencias dinámicas
+                let rawText = data.texto || "Lo siento, no pude procesar eso.";
+                let cleanText = rawText;
+                let suggestions = [];
 
-                // Sugerencias Inteligentes después de la respuesta de la IA
+                if (rawText.includes("[SUG]:")) {
+                    const parts = rawText.split("[SUG]:");
+                    cleanText = parts[0].trim();
+                    const sugPart = parts[1].trim();
+                    suggestions = sugPart.split("|").map(s => s.trim().replace(/\?$/, "") + "?");
+                }
+
+                appendMessage(cleanText, 'bot');
+                await saveMessageToSession(cleanText, true);
+
+                // Mostrar Sugerencias Dinámicas si existen
                 setTimeout(() => {
-                    const suggestion = findSmartSuggestion(data.texto || "");
-                    if (suggestion) {
-                        const suggestionHtml = `
+                    if (suggestions.length > 0) {
+                        const sugHtml = `
                             <div class="menu-container" style="border: 1px dashed var(--blue-300); background: var(--blue-50);">
-                                <p style="font-size: 0.85em; font-weight: bold; color: var(--blue-700); margin-bottom: 8px;">💡 Pregunta relacionada:</p>
-                                <button class="question-btn" style="text-align: left;" onclick="answerQuestion('${suggestion.catId}', ${suggestion.qIndex}, ${suggestion.sIndex})">
-                                    ${suggestion.q}
-                                </button>
+                                <p style="font-size: 0.85em; font-weight: bold; color: var(--blue-700); margin-bottom: 8px;">💡 Tal vez te interese saber:</p>
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    ${suggestions.map(s => `
+                                        <button class="question-btn" style="text-align: left;" onclick="document.getElementById('messageInput').value='${s}'; handleSend(); this.parentElement.parentElement.remove();">
+                                            ${s}
+                                        </button>
+                                    `).join('')}
+                                </div>
                             </div>`;
-                        appendMessage(suggestionHtml, 'bot');
+                        appendMessage(sugHtml, 'bot');
                     }
                     showSafetyNet();
-                }, 2000);
+                }, 1500);
             }
         } catch (error) {
             console.error("Error:", error);
@@ -520,12 +519,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    sendBtn.addEventListener('click', handleSend);
+    sendBtn.addEventListener('click', window.handleSend);
     if (messageInput) {
         messageInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                handleSend();
+                window.handleSend();
             }
         });
     }
