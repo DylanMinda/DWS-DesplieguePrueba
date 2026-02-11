@@ -1,0 +1,93 @@
+@model IEnumerable<MedIQ_Modelos.ConocimientoCategoria>
+@{
+    ViewData["Title"] = "Gestión de Categorías";
+    Layout = "_Layout";
+}
+
+<div class="admin-container" style="padding: 20px; max-width: 1200px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2>📚 Categorías de Conocimiento</h2>
+        <div>
+            <button onclick="document.getElementById('modalSync').style.display='flex'" class="btn btn-secondary" style="margin-right: 10px;">
+                <i class="fas fa-sync"></i> Sincronizar con Pinecone
+            </button>
+            <button onclick="document.getElementById('modalCreate').style.display='flex'" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nueva Categoría
+            </button>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success" style="background: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            @TempData["Success"]
+        </div>
+    }
+
+    <div class="card-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+        @foreach (var cat in Model)
+        {
+            <div class="card" style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e0e6ed; position: relative;">
+                <div style="font-size: 2rem; margin-bottom: 10px; color: #1976d2;">
+                    <i class="@(string.IsNullOrEmpty(cat.Icono) ? "fas fa-folder" : cat.Icono)"></i>
+                </div>
+                <h3>@cat.Nombre</h3>
+                <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">@cat.Descripcion</p>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.8rem; background: #f0f4f8; padding: 4px 8px; border-radius: 4px;">
+                        @cat.Preguntas.Count() preguntas
+                    </span>
+                    <div style="display: flex; gap: 10px;">
+                        <a asp-action="Preguntas" asp-route-categoriaId="@cat.Id" class="btn btn-sm" style="background: #e3f2fd; color: #1976d2;">Ver Q&A</a>
+                        <form asp-action="DeleteCategoria" asp-route-id="@cat.Id" method="post" onsubmit="return confirm('¿Seguro que quieres eliminar esta categoría y todas sus preguntas?')">
+                            <button type="submit" class="btn btn-sm" style="background: #ffebee; color: #c62828; border: none; cursor: pointer;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal Crear -->
+<div id="modalCreate" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:white; padding:30px; border-radius:15px; width:100%; max-width:500px;">
+        <h3>Nueva Categoría</h3>
+        <form asp-action="CreateCategoria" method="post">
+            <div style="margin-bottom:15px;">
+                <label>Nombre</label>
+                <input name="Nombre" class="form-control" required style="width:100%; padding:8px; margin-top:5px; border:1px solid #ddd; border-radius:4px;" />
+            </div>
+            <div style="margin-bottom:15px;">
+                <label>Icono (Clase FontAwesome)</label>
+                <input name="Icono" placeholder="fas fa-pills" class="form-control" style="width:100%; padding:8px; margin-top:5px; border:1px solid #ddd; border-radius:4px;" />
+            </div>
+            <div style="margin-bottom:20px;">
+                <label>Descripción</label>
+                <textarea name="Descripcion" class="form-control" style="width:100%; padding:8px; margin-top:5px; border:1px solid #ddd; border-radius:4px;"></textarea>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button type="button" onclick="document.getElementById('modalCreate').style.display='none'" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Sync -->
+<div id="modalSync" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:white; padding:30px; border-radius:15px; width:100%; max-width:500px; text-align:center;">
+        <i class="fas fa-cloud-upload-alt" style="font-size:3rem; color:#1976d2; margin-bottom:20px;"></i>
+        <h3>Sincronizar con Pinecone</h3>
+        <p style="color:#666; margin-bottom:25px;">Esto enviará todo el conocimiento de Postgres a n8n para actualizar los vectores en Pinecone. El chat web usará esta información actualizada.</p>
+        <form asp-action="Sync" method="post">
+            <div style="display:flex; justify-content:center; gap:10px;">
+                <button type="button" onclick="document.getElementById('modalSync').style.display='none'" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Iniciar Sincronización</button>
+            </div>
+        </form>
+    </div>
+</div>

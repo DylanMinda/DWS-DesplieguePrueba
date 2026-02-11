@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using MedIQ_API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,7 +53,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<AppDbContext>();
-        context.Database.Migrate(); // Aplica migraciones pendientes (ej. agregar columna Rol)
+        context.Database.EnsureCreated(); // Crea la base de datos si no existe
         Console.WriteLine("Migraciones aplicadas correctamente.");
     }
     catch (Exception ex)

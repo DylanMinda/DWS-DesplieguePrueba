@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using MedIQ_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
@@ -74,6 +75,12 @@ namespace DWS.Controllers
                     // Éxito: Limpiar intentos fallidos
                     _cache.Remove(cacheKey);
 
+                    if (usuario.Rol != "Admin")
+                    {
+                        ModelState.AddModelError("", "Acceso denegado. Este portal es exclusivo para administradores.");
+                        return View();
+                    }
+
                     var claims = new List<Claim> {
                         new Claim(ClaimTypes.Name, usuario.Email),
                         new Claim(ClaimTypes.Email, usuario.Email),
@@ -87,7 +94,7 @@ namespace DWS.Controllers
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity));
 
-                    return RedirectToAction("Welcome", "Chat");
+                    return RedirectToAction("Dashboard", "Admin");
                 }
                 else
                 {
@@ -114,59 +121,6 @@ namespace DWS.Controllers
 
             ModelState.AddModelError("", "El email o la contraseña son incorrectos.");
             return View();
-        }
-
-        [HttpGet]
-        public IActionResult Register() => View();
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        // CAMBIO IMPORTANTE: El nombre del método debe coincidir con la acción de la vista o usar [ActionName]
-        public async Task<IActionResult> Register(Usuario usuario)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    // 1. Validar que el correo no exista ya
-                    if (await _context.Usuarios.AnyAsync(u => u.Email == usuario.Email))
-                    {
-                        ModelState.AddModelError("Email", "Este correo ya está registrado.");
-                        return View(usuario);
-                    }
-
-                    // 2. Validar complejidad de contraseña (Simple)
-                    if (!EsContraseñaSegura(usuario.Contraseña))
-                    {
-                        ModelState.AddModelError("Contraseña", "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número.");
-                        return View(usuario);
-                    }
-
-                    // Encriptamos la contraseña antes de guardarla usando BCrypt
-                    usuario.Contraseña = BCrypt.Net.BCrypt.HashPassword(usuario.Contraseña);
-
-                    _context.Usuarios.Add(usuario); // Especificamos la tabla Usuarios
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction("Login");
-                }
-                catch (Exception ex)
-                {
-                    // Esto capturará errores de conexión con Render o de la base de datos
-                    ModelState.AddModelError("", "Error al conectar con la base de datos: " + ex.Message);
-                }
-            }
-
-            return View(usuario);
-        }
-
-        // Método simple para validar seguridad
-        private bool EsContraseñaSegura(string password)
-        {
-            if (string.IsNullOrEmpty(password)) return false;
-            if (password.Length < 8) return false; // Mínimo 8 caracteres
-            if (!password.Any(char.IsUpper)) return false; // Al menos una mayúscula
-            if (!password.Any(char.IsDigit)) return false; // Al menos un número
-            return true;
         }
 
         // Método helper para encriptar contraseñas (SHA256)

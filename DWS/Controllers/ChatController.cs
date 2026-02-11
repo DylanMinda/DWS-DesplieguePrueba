@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using MedIQ_API.Data;
 
 namespace DWS.Controllers
 {
@@ -25,22 +26,47 @@ namespace DWS.Controllers
             return View();
         }
 
-        // Vista del Chat - Solo accesible si está logueado
-        [Authorize]
+        // Vista del Chat - Ahora pública
         public IActionResult Chat(string category)
         {
-            // Pasamos la categoría a la vista para que el asistente sepa el contexto
             ViewBag.Category = category;
-
-            // Aquí el de backend luego cargará el historial real
             ViewBag.Conversations = new List<ChatSession>();
-
             return View();
         }
 
-        // Acción para procesar el mensaje (con soporte para imágenes)
+        [HttpGet]
+        public async Task<IActionResult> GetDynamicMenu()
+        {
+            var menu = await _context.CategoriasConocimiento
+                .Include(c => c.Preguntas)
+                    .ThenInclude(p => p.SubPreguntas)
+                .Select(c => new
+                {
+                    id = c.Id.ToString(),
+                    titulo = c.Nombre,
+                    icono = c.Icono,
+                    descripcion = c.Descripcion,
+                    // Filtramos solo las preguntas principales (sin padre)
+                    preguntas = c.Preguntas.Where(p => p.ParentId == null).Select(p => new
+                    {
+                        q = p.Pregunta,
+                        a = p.Respuesta,
+                        keywords = p.Keywords,
+                        // Añadimos sus sub-preguntas (Nivel 3)
+                        sub = p.SubPreguntas.Select(s => new
+                        {
+                            q = s.Pregunta,
+                            a = s.Respuesta
+                        }).ToList()
+                    }).ToList()
+                })
+                .ToListAsync();
+
+            return Json(menu);
+        }
+
+        // Acción para procesar el mensaje - Ahora pública
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> SendMessage(string chatInput, IFormFile? image)
         {
             // 1. Detección de riesgo (Alertas Preventivas RF.APL.04)
@@ -84,8 +110,9 @@ namespace DWS.Controllers
                 return Json(new { texto = "Error: La URL de n8n no está configurada.", esIA = true, alerta = alerta, imagenUrl = imagenPathUrl });
             }
 
-            // Construir la URL con parámetros de consulta para asegurar que n8n los capture correctamente
-            var n8nUrl = $"{n8nUrlBase}?chatInput={Uri.EscapeDataString(chatInput ?? "")}&usuario={Uri.EscapeDataString(User.Identity.Name ?? "")}";
+            // Construir la URL con parámetros de consulta
+            var usuarioNombre = User.Identity?.IsAuthenticated == true ? User.Identity.Name : "Usuario_Anonimo";
+            var n8nUrl = $"{n8nUrlBase}?chatInput={Uri.EscapeDataString(chatInput ?? "")}&usuario={Uri.EscapeDataString(usuarioNombre ?? "")}";
 
             using var client = new HttpClient();
             client.Timeout = TimeSpan.FromMinutes(5); // Aumentar tiempo de espera a 5 minutos
@@ -180,9 +207,11 @@ namespace DWS.Controllers
         // ========== CONVERSATION HISTORY ENDPOINTS ==========
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> CreateSession([FromBody] string titulo)
         {
+            if (User.Identity?.IsAuthenticated != true) 
+                return Json(new { sessionId = 0, titulo = "Chat Temporal", fecha = DateTime.UtcNow });
+
             var email = User.Identity.Name;
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
             if (usuario == null) return Unauthorized();
@@ -201,9 +230,10 @@ namespace DWS.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetUserSessions()
         {
+            if (User.Identity?.IsAuthenticated != true) return Json(new List<object>());
+
             var email = User.Identity.Name;
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
             if (usuario == null) return Unauthorized();
@@ -223,9 +253,10 @@ namespace DWS.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetSessionMessages(int sessionId)
         {
+            if (User.Identity?.IsAuthenticated != true) return Json(new List<object>());
+
             var email = User.Identity.Name;
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
             if (usuario == null) return Unauthorized();
@@ -250,9 +281,10 @@ namespace DWS.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> SaveMessage([FromBody] SaveMessageRequest request)
         {
+            if (User.Identity?.IsAuthenticated != true || request.SessionId == 0) return Ok();
+
             var email = User.Identity.Name;
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
             if (usuario == null) return Unauthorized();
@@ -277,9 +309,10 @@ namespace DWS.Controllers
         }
 
         [HttpDelete]
-        [Authorize]
         public async Task<IActionResult> DeleteSession(int sessionId)
         {
+            if (User.Identity?.IsAuthenticated != true) return Unauthorized();
+
             var email = User.Identity.Name;
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
             if (usuario == null) return Unauthorized();

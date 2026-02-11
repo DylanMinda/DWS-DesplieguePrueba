@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using MedIQ_Modelos;
+using MedIQ_API.Data;
 using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions { Args = args });
@@ -86,8 +87,8 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<AppDbContext>();
-        // SOLO MIGRACIÓN - Preserva datos existentes
-        context.Database.Migrate(); 
+        // Asegurar que la DB exista y tenga el esquema actual
+        context.Database.EnsureCreated(); 
         Console.WriteLine("✅ Migraciones aplicadas correctamente.");
 
         // SEED DATA: Crear usuario administrador por defecto

@@ -1,0 +1,153 @@
+@model IEnumerable<MedIQ_Modelos.ConocimientoQA>
+@using System.Text.Encodings.Web
+@{
+    ViewData["Title"] = "Gestión de Preguntas";
+    Layout = "_Layout";
+}
+
+<div class="admin-container" style="padding: 20px; max-width: 1200px; margin: 0 auto;">
+    <div style="margin-bottom: 20px;">
+        <a asp-action="Categorias" style="color: #666; text-decoration: none;">← Volver a Categorías</a>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2>📝 Preguntas Frecuentes (Q&A)</h2>
+        <button onclick="openCreateModal()" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Nueva Pregunta
+        </button>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger" style="background: #ffebee; color: #c62828; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success" style="background: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            @TempData["Success"]
+        </div>
+    }
+
+    <div class="table-responsive" style="background: white; border-radius: 12px; border: 1px solid #e0e6ed; overflow: hidden;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #f8fafc; border-bottom: 1px solid #e0e6ed; text-align: left;">
+                    <th style="padding: 15px;">Pregunta</th>
+                    <th style="padding: 15px;">Categoría</th>
+                    <th style="padding: 15px;">Keywords</th>
+                    <th style="padding: 15px; text-align: right;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var qa in Model)
+                {
+                    <tr style="border-bottom: 1px solid #f1f5f9;">
+                        <td style="padding: 15px; font-weight: 500;">
+                            @if (qa.ParentId != null)
+                            {
+                                <i class="fas fa-level-up-alt fa-rotate-90" style="color: #94a3b8; margin-right: 5px;"></i>
+                            }
+                            @qa.Pregunta
+                        </td>
+                        <td style="padding: 15px;">
+                            <span style="font-size: 0.85rem; background: #e3f2fd; color: #1976d2; padding: 4px 10px; border-radius: 20px;">
+                                @qa.Categoria.Nombre
+                            </span>
+                        </td>
+                        <td style="padding: 15px; color: #666; font-size: 0.85rem;">@qa.Keywords</td>
+                        <td style="padding: 15px; text-align: right;">
+                            <button onclick="openEditModal(@qa.Id, '@Html.Raw(JavaScriptEncoder.Default.Encode(qa.Pregunta))', '@Html.Raw(JavaScriptEncoder.Default.Encode(qa.Respuesta))', '@qa.Keywords', @qa.CategoriaId, @(qa.ParentId?.ToString() ?? "null"))" class="btn btn-sm" style="background: #f1f5f9; color: #475569; border: none; cursor: pointer; padding: 6px 10px; border-radius: 6px;">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <form asp-action="DeletePregunta" asp-route-id="@qa.Id" method="post" style="display:inline;" onsubmit="return confirm('¿Borrar esta pregunta?')">
+                                <button type="submit" class="btn btn-sm" style="background: #ffebee; color: #c62828; border: none; cursor: pointer; padding: 6px 10px; border-radius: 6px;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Upsert -->
+<div id="modalUpsert" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:white; padding:30px; border-radius:15px; width:100%; max-width:700px; max-height: 90vh; overflow-y: auto;">
+        <h3 id="modalTitle">Nueva Pregunta</h3>
+        <form asp-action="UpsertPregunta" method="post">
+            <input type="hidden" name="Id" id="qaId" value="0" />
+            
+            <div style="display: flex; gap: 15px; margin-bottom:15px;">
+                <div style="flex: 1;">
+                    <label>Categoría</label>
+                    <select name="CategoriaId" id="qaCategoriaId" class="form-control" required style="width:100%; padding:8px; margin-top:5px; border:1px solid #ddd; border-radius:4px;">
+                        @foreach (var cat in (IEnumerable<MedIQ_Modelos.ConocimientoCategoria>)ViewBag.Categorias)
+                        {
+                            <option value="@cat.Id">@cat.Nombre</option>
+                        }
+                    </select>
+                </div>
+                <div style="flex: 1;">
+                    <label>Pregunta Padre (Opcional)</label>
+                    <select name="ParentId" id="qaParentId" class="form-control" style="width:100%; padding:8px; margin-top:5px; border:1px solid #ddd; border-radius:4px;">
+                        <option value="">-- Es pregunta principal --</option>
+                        @foreach (var p in Model.Where(m => m.ParentId == null))
+                        {
+                            <option value="@p.Id">@p.Pregunta</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-bottom:15px;">
+                <label>Pregunta</label>
+                <input name="Pregunta" id="qaPregunta" class="form-control" required style="width:100%; padding:8px; margin-top:5px; border:1px solid #ddd; border-radius:4px;" />
+            </div>
+
+            <div style="margin-bottom:15px;">
+                <label>Respuesta (Formatos soportados por la IA)</label>
+                <textarea name="Respuesta" id="qaRespuesta" class="form-control" required style="width:100%; height:150px; padding:8px; margin-top:5px; border:1px solid #ddd; border-radius:4px; font-family: sans-serif;"></textarea>
+            </div>
+
+            <div style="margin-bottom:20px;">
+                <label>Palabras Clave (Separadas por coma)</label>
+                <input name="Keywords" id="qaKeywords" class="form-control" placeholder="antibióticos, gripe, dosis" style="width:100%; padding:8px; margin-top:5px; border:1px solid #ddd; border-radius:4px;" />
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button type="button" onclick="document.getElementById('modalUpsert').style.display='none'" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openCreateModal() {
+        document.getElementById('modalTitle').innerText = 'Nueva Pregunta';
+        document.getElementById('qaId').value = '0';
+        document.getElementById('qaPregunta').value = '';
+        document.getElementById('qaRespuesta').value = '';
+        document.getElementById('qaKeywords').value = '';
+        document.getElementById('qaParentId').value = '';
+        const selectedCat = '@(ViewBag.SelectedCategoriaId ?? "")';
+        if(selectedCat) document.getElementById('qaCategoriaId').value = selectedCat;
+        document.getElementById('modalUpsert').style.display = 'flex';
+    }
+
+    function openEditModal(id, pregunta, respuesta, keywords, catId, parentId) {
+        document.getElementById('modalTitle').innerText = 'Editar Pregunta';
+        document.getElementById('qaId').value = id;
+        document.getElementById('qaPregunta').value = pregunta;
+        document.getElementById('qaRespuesta').value = respuesta;
+        document.getElementById('qaKeywords').value = keywords;
+        document.getElementById('qaCategoriaId').value = catId;
+        document.getElementById('qaParentId').value = parentId || '';
+        document.getElementById('modalUpsert').style.display = 'flex';
+    }
+</script>

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MedIQ_Modelos;
+using MedIQ_API.Data;
 
 namespace MedIQ_API.Controllers
 {

@@ -1,0 +1,17 @@
+  Determinando los proyectos que se van a restaurar...
+  Todos los proyectos están actualizados para la restauración.
+  MedIQ-CRUD -> C:\Users\Dylan\Documentos\Cuarto semestre\Diseño Software\ProyectoMVC\DWS\MedIQ-CRUD\bin\Debug\net8.0\MedIQ-CRUD.dll
+  MedIQ-Modelos -> C:\Users\Dylan\Documentos\Cuarto semestre\Diseño Software\ProyectoMVC\DWS\MedIQ-Modelos\bin\Debug\net8.0\MedIQ-Modelos.dll
+C:\Users\Dylan\Documentos\Cuarto semestre\Diseño Software\ProyectoMVC\DWS\MedIQ-API\Controllers\ChatSessionsController.cs(14,18): error CS0101: El espacio de nombres 'MedIQ_API.Controllers' ya contiene una definición para 'ChatController' [C:\Users\Dylan\Documentos\Cuarto semestre\Diseño Software\ProyectoMVC\DWS\MedIQ-API\MedIQ-API.csproj]
+C:\Users\Dylan\Documentos\Cuarto semestre\Diseño Software\ProyectoMVC\DWS\MedIQ-API\Controllers\ChatSessionsController.cs(13,6): error CS0579: Atributo 'ApiController' duplicado [C:\Users\Dylan\Documentos\Cuarto semestre\Diseño Software\ProyectoMVC\DWS\MedIQ-API\MedIQ-API.csproj]
+
+ERROR al compilar.
+
+C:\Users\Dylan\Documentos\Cuarto semestre\Diseño Software\ProyectoMVC\DWS\MedIQ-API\Controllers\ChatSessionsController.cs(14,18): error CS0101: El espacio de nombres 'MedIQ_API.Controllers' ya contiene una definición para 'ChatController' [C:\Users\Dylan\Documentos\Cuarto semestre\Diseño Software\ProyectoMVC\DWS\MedIQ-API\MedIQ-API.csproj]
+C:\Users\Dylan\Documentos\Cuarto semestre\Diseño Software\ProyectoMVC\DWS\MedIQ-API\Controllers\ChatSessionsController.cs(13,6): error CS0579: Atributo 'ApiController' duplicado [C:\Users\Dylan\Documentos\Cuarto semestre\Diseño Software\ProyectoMVC\DWS\MedIQ-API\MedIQ-API.csproj]
+    0 Advertencia(s)
+    2 Errores
+
+Tiempo transcurrido 00:00:01.48
+
+Hay actualizaciones de carga de trabajo disponibles. Ejecute "dotnet workload list" para obtener más información.

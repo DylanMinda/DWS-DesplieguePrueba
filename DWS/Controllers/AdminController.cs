@@ -1,5 +1,6 @@
 using MedIQ_Modelos;
 using Microsoft.AspNetCore.Authorization;
+using MedIQ_API.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
