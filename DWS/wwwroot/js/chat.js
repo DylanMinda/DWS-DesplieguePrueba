@@ -338,13 +338,21 @@ document.addEventListener('DOMContentLoaded', function () {
         const message = pendingMessage;
         const imageFile = pendingImage;
 
-        const identityRules = "\n\n[INSTRUCCIONES PARA LA IA]:\nEres MedIQ, experto en uso responsable de medicamentos. Solo responde sobre medicina/salud. Si preguntan fuera de tema, declina amablemente.";
-        const formatRules = "\nUsa párrafos, listas y saltos de línea. [SUG]: pregunta1 | pregunta2";
-        const lengthInstruction = isShort ? " (Respuesta corta)" : " (Respuesta detallada)";
+        // Reglas de identidad y comportamiento para la IA
+        const identityRules = "\nTU IDENTIDAD: Eres MedIQ, un asistente experto para concientizar sobre el uso responsable de medicamentos. " +
+            "REGLA DE ORO: Solo responde preguntas relacionadas con medicina, salud, fármacos y bienestar. " +
+            "Si el usuario pregunta algo fuera de este tema (como matemáticas, historia, chistes o temas generales), declina amablemente y recuérdale que tu especialidad es el uso seguro de medicamentos.";
 
-        // Enviamos el mensaje limpio PRIMERO para que n8n/Pinecone lo use como búsqueda
-        // y las instrucciones después separadas por un delimitador claro.
-        const finalInput = message + identityRules + lengthInstruction + formatRules;
+        const formatRules = "\nINSTRUCCIÓN DE FORMATO: Usa varios párrafos, saltos de línea y listas numeradas para que la información sea fácil de leer. No escribas todo en un solo bloque de texto.";
+        const lengthInstruction = isShort ? " (Responde de forma muy breve y directa)" : " (Responde de forma detallada y educativa)";
+
+        // Nueva instrucción para preguntas de seguimiento dinámicas (Con restricciones éticas estrictas)
+        const suggestionsRule = "\n\nREGLA CRÍTICA DE SUGERENCIAS: Añade 2 sugerencias de preguntas cortas que el USUARIO podría hacerte a TI para profundizar. " +
+            "PROHIBIDO: No sugieras preguntas sobre dosis, horarios específicos de toma, recetas o cualquier recomendación médica directa. " +
+            "ENFOQUE: Sugiere temas sobre educación, riesgos de la automedicación, qué revisar en etiquetas o cuándo ir al médico. " +
+            "Usa exactamente este formato al final de tu respuesta: '[SUG]: pregunta1 | pregunta2'";
+
+        const finalInput = message + identityRules + lengthInstruction + formatRules + suggestionsRule;
 
         loadingIndicator.classList.add('active');
         chatMessages.scrollTop = chatMessages.scrollHeight;

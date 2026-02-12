@@ -189,7 +189,7 @@ namespace DWS.Controllers
                 if (mensaje.Contains(palabra))
                 {
                     return "Lo siento, no puedo realizar diagnósticos médicos. " +
-                           "MedIQ es una herramienta educativa sobre medicamentos y tratamientos, " +
+                           "MedIQ es una herramienta educativa sobre medicamentos y conocimiento, " +
                            "pero NO puede diagnosticar enfermedades ni evaluar síntomas. " +
                            "Si tienes molestias o síntomas, por favor consulta con un médico profesional.";
                 }

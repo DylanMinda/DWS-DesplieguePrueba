@@ -1,48 +1,198 @@
 @model IEnumerable<MedIQ_Modelos.ConocimientoCategoria>
 @{
-    ViewData["Title"] = "Gestión de Categorías";
+    ViewData["Title"] = "Gestión de Temas Médicos";
     Layout = "_Layout";
 }
 
-<div class="admin-container" style="padding: 20px; max-width: 1200px; margin: 0 auto;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-        <h2>📚 Categorías de Conocimiento</h2>
+<style>
+    .admin-container {
+        padding: 40px 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .header-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+
+    .header-title h2 {
+        font-size: 2rem;
+        color: var(--blue-800);
+        margin-bottom: 5px;
+    }
+
+    .header-title p {
+        color: #64748b;
+    }
+
+    /* Tarjetas más grandes y estilizadas */
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 30px;
+    }
+
+    .knowledge-card {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 250px;
+    }
+
+    .knowledge-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+        border-color: var(--blue-200);
+    }
+
+    .card-icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: var(--blue-600);
+        background: var(--blue-50);
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+    }
+
+    .card-content h3 {
+        font-size: 1.4rem;
+        margin-bottom: 10px;
+        color: #1e293b;
+    }
+
+    .card-content p {
+        color: #64748b;
+        line-height: 1.5;
+        margin-bottom: 20px;
+    }
+
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 20px;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    /* Botones más claros y grandes */
+    .btn-action {
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-view {
+        background: var(--blue-600);
+        color: white !important;
+    }
+
+    .btn-view:hover {
+        background: var(--blue-700);
+    }
+
+    .btn-delete {
+        background: #fee2e2;
+        color: #dc2626 !important;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-delete:hover {
+        background: #fecaca;
+    }
+
+    /* Selector de Iconos */
+    .icon-picker {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+        margin-top: 10px;
+        max-height: 150px;
+        overflow-y: auto;
+        padding: 10px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+    }
+
+    .icon-option {
+        padding: 10px;
+        text-align: center;
+        cursor: pointer;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        font-size: 1.2rem;
+    }
+
+    .icon-option:hover, .icon-option.selected {
+        background: var(--blue-50);
+        border-color: var(--blue-400);
+        color: var(--blue-600);
+    }
+</style>
+
+<div class="admin-container">
+    <div class="header-flex">
+        <div class="header-title">
+            <h2>📚 Temas del Educador</h2>
+            <p>Define las categorías de salud que MedIQ mostrará en el chat.</p>
+        </div>
         <div>
-            <button onclick="document.getElementById('modalSync').style.display='flex'" class="btn btn-secondary" style="margin-right: 10px;">
-                <i class="fas fa-sync"></i> Sincronizar con Pinecone
+            <button onclick="document.getElementById('modalSync').style.display='flex'" class="btn btn-secondary" style="margin-right: 12px; padding: 12px 20px;">
+                <i class="fas fa-brain"></i> Actualizar Inteligencia del Chat
             </button>
-            <button onclick="document.getElementById('modalCreate').style.display='flex'" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Nueva Categoría
+            <button onclick="document.getElementById('modalCreate').style.display='flex'" class="btn btn-primary" style="padding: 12px 25px;">
+                <i class="fas fa-plus-circle"></i> Crear Nuevo Tema
             </button>
         </div>
     </div>
 
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success" style="background: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            @TempData["Success"]
+        <div class="alert alert-success fade-in" style="background: #ecfdf5; color: #065f46; padding: 15px; border-radius: 12px; margin-bottom: 30px; border-left: 5px solid #10b981;">
+            <i class="fas fa-check-circle" style="margin-right: 8px;"></i> @TempData["Success"]
         </div>
     }
 
-    <div class="card-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+    <div class="card-grid">
         @foreach (var cat in Model)
         {
-            <div class="card" style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #e0e6ed; position: relative;">
-                <div style="font-size: 2rem; margin-bottom: 10px; color: #1976d2;">
-                    <i class="@(string.IsNullOrEmpty(cat.Icono) ? "fas fa-folder" : cat.Icono)"></i>
+            <div class="knowledge-card">
+                <div class="card-content">
+                    <div class="card-icon">
+                        <i class="@(string.IsNullOrEmpty(cat.Icono) ? "fas fa-folder" : cat.Icono)"></i>
+                    </div>
+                    <h3>@cat.Nombre</h3>
+                    <p>@cat.Descripcion</p>
                 </div>
-                <h3>@cat.Nombre</h3>
-                <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">@cat.Descripcion</p>
                 
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 0.8rem; background: #f0f4f8; padding: 4px 8px; border-radius: 4px;">
-                        @cat.Preguntas.Count() preguntas
+                <div class="card-footer">
+                    <span style="font-size: 0.9rem; font-weight: 500; color: #64748b; background: #f1f5f9; padding: 5px 12px; border-radius: 20px;">
+                         @(cat.Preguntas?.Count() ?? 0) preguntas guardadas
                     </span>
-                    <div style="display: flex; gap: 10px;">
-                        <a asp-action="Preguntas" asp-route-categoriaId="@cat.Id" class="btn btn-sm" style="background: #e3f2fd; color: #1976d2;">Ver Q&A</a>
-                        <form asp-action="DeleteCategoria" asp-route-id="@cat.Id" method="post" onsubmit="return confirm('¿Seguro que quieres eliminar esta categoría y todas sus preguntas?')">
-                            <button type="submit" class="btn btn-sm" style="background: #ffebee; color: #c62828; border: none; cursor: pointer;">
-                                <i class="fas fa-trash"></i>
+                    <div style="display: flex; gap: 12px;">
+                        <a asp-action="Preguntas" asp-route-categoriaId="@cat.Id" class="btn-action btn-view">
+                            <i class="fas fa-list-ul"></i> Ver Q&A
+                        </a>
+                        <form asp-action="DeleteCategoria" asp-route-id="@cat.Id" method="post" onsubmit="return confirm('¿Seguro que quieres eliminar este tema?')">
+                            <button type="submit" class="btn-action btn-delete">
+                                <i class="fas fa-trash-alt"></i>
                             </button>
                         </form>
                     </div>
@@ -53,41 +203,74 @@
 </div>
 
 <!-- Modal Crear -->
-<div id="modalCreate" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
-    <div style="background:white; padding:30px; border-radius:15px; width:100%; max-width:500px;">
-        <h3>Nueva Categoría</h3>
-        <form asp-action="CreateCategoria" method="post">
-            <div style="margin-bottom:15px;">
-                <label>Nombre</label>
-                <input name="Nombre" class="form-control" required style="width:100%; padding:8px; margin-top:5px; border:1px solid #ddd; border-radius:4px;" />
-            </div>
-            <div style="margin-bottom:15px;">
-                <label>Icono (Clase FontAwesome)</label>
-                <input name="Icono" placeholder="fas fa-pills" class="form-control" style="width:100%; padding:8px; margin-top:5px; border:1px solid #ddd; border-radius:4px;" />
-            </div>
+<div id="modalCreate" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.75); z-index:2000; align-items:center; justify-content:center; backdrop-filter: blur(4px);">
+    <div class="fade-in-up" style="background:white; padding:40px; border-radius:24px; width:100%; max-width:550px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+        <h3 style="font-size: 1.5rem; margin-bottom: 25px; color: #1e293b;">🚀 Crear Nuevo Tema Médico</h3>
+        <form asp-action="CreateCategoria" method="post" id="createForm">
             <div style="margin-bottom:20px;">
-                <label>Descripción</label>
-                <textarea name="Descripcion" class="form-control" style="width:100%; padding:8px; margin-top:5px; border:1px solid #ddd; border-radius:4px;"></textarea>
+                <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 8px;">Nombre del Tema</label>
+                <input name="Nombre" placeholder="Ej: Diabetes, Antibióticos..." class="form-control" required style="width:100%; padding:12px; border:1.5px solid #e2e8f0; border-radius:12px; outline: none; transition: border-color 0.2s;" />
             </div>
-            <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button type="button" onclick="document.getElementById('modalCreate').style.display='none'" class="btn btn-secondary">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Guardar</button>
+
+            <div style="margin-bottom:20px;">
+                <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 8px;">Elige un Icono</label>
+                <input type="hidden" name="Icono" id="selectedIcon" value="fas fa-pills" />
+                <div class="icon-picker">
+                    <div class="icon-option selected" onclick="selectIcon(this, 'fas fa-pills')"><i class="fas fa-pills"></i></div>
+                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-capsules')"><i class="fas fa-capsules"></i></div>
+                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-heartbeat')"><i class="fas fa-heartbeat"></i></div>
+                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-stethoscope')"><i class="fas fa-stethoscope"></i></div>
+                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-vial')"><i class="fas fa-vial"></i></div>
+                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-dna')"><i class="fas fa-dna"></i></div>
+                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-microscope')"><i class="fas fa-microscope"></i></div>
+                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-user-md')"><i class="fas fa-user-md"></i></div>
+                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-hospital')"><i class="fas fa-hospital"></i></div>
+                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-first-aid')"><i class="fas fa-first-aid"></i></div>
+                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-book-medical')"><i class="fas fa-book-medical"></i></div>
+                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-notes-medical')"><i class="fas fa-notes-medical"></i></div>
+                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-thermometer-half')"><i class="fas fa-thermometer-half"></i></div>
+                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-syringe')"><i class="fas fa-syringe"></i></div>
+                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-pills')"><i class="fas fa-pills"></i></div>
+                </div>
+            </div>
+
+            <div style="margin-bottom:30px;">
+                <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 8px;">Descripción breve</label>
+                <textarea name="Description" placeholder="¿De qué trata este tema?" class="form-control" style="width:100%; height:100px; padding:12px; border:1.5px solid #e2e8f0; border-radius:12px; outline: none;"></textarea>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:12px;">
+                <button type="button" onclick="document.getElementById('modalCreate').style.display='none'" style="padding: 12px 25px; border-radius: 12px; border: 1px solid #e2e8f0; background: #f8fafc; color: #64748b; cursor: pointer; font-weight: 600;">Cancelar</button>
+                <button type="submit" style="padding: 12px 30px; border-radius: 12px; border: none; background: var(--blue-600); color: white; cursor: pointer; font-weight: 600;">Guardar Tema</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Modal Sync -->
-<div id="modalSync" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
-    <div style="background:white; padding:30px; border-radius:15px; width:100%; max-width:500px; text-align:center;">
-        <i class="fas fa-cloud-upload-alt" style="font-size:3rem; color:#1976d2; margin-bottom:20px;"></i>
-        <h3>Sincronizar con Pinecone</h3>
-        <p style="color:#666; margin-bottom:25px;">Esto enviará todo el conocimiento de Postgres a n8n para actualizar los vectores en Pinecone. El chat web usará esta información actualizada.</p>
+<!-- Modal Sync (Actualizar Inteligencia) -->
+<div id="modalSync" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.75); z-index:2000; align-items:center; justify-content:center; backdrop-filter: blur(4px);">
+    <div class="fade-in-up" style="background:white; padding:40px; border-radius:24px; width:100%; max-width:500px; text-align:center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+        <div style="width: 100px; height: 100px; background: var(--blue-50); color: var(--blue-600); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; font-size: 3rem;">
+            <i class="fas fa-brain"></i>
+        </div>
+        <h3 style="font-size: 1.5rem; color: #1e293b; margin-bottom: 15px;">Actualizar Inteligencia del Chat</h3>
+        <p style="color:#64748b; margin-bottom:30px; line-height: 1.6;">Esto enviará todos tus cambios al cerebro de MedIQ (la IA). Una vez terminado, el asistente conocerá las nuevas categorías y preguntas de inmediato.</p>
         <form asp-action="Sync" method="post">
-            <div style="display:flex; justify-content:center; gap:10px;">
-                <button type="button" onclick="document.getElementById('modalSync').style.display='none'" class="btn btn-secondary">Cancelar</button>
-                <button type="submit" class="btn btn-primary">Iniciar Sincronización</button>
+            <div style="display:flex; justify-content:center; gap:15px;">
+                <button type="button" onclick="document.getElementById('modalSync').style.display='none'" style="padding: 12px 25px; border-radius: 12px; border: 1px solid #e2e8f0; background: #f8fafc; color: #64748b; cursor: pointer; font-weight: 600;">Cancelar</button>
+                <button type="submit" style="padding: 12px 30px; border-radius: 12px; border: none; background: var(--blue-600); color: white; cursor: pointer; font-weight: 600; box-shadow: 0 4px 14px rgba(91, 123, 213, 0.4);">🚀 Iniciar Actualización</button>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+    function selectIcon(el, iconClass) {
+        // Remover clase selected de otros
+        document.querySelectorAll('.icon-option').forEach(opt => opt.classList.remove('selected'));
+        // Añadir a este
+        el.classList.add('selected');
+        // Actualizar el input hidden
+        document.getElementById('selectedIcon').value = iconClass;
+    }
+</script>

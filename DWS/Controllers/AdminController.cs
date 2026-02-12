@@ -16,18 +16,15 @@ namespace DWS.Controllers
             _context = context;
         }
 
-        // Dashboard con estadísticas
+        // Dashboard con estadísticas de conocimiento
         public async Task<IActionResult> Dashboard()
         {
             var stats = new
             {
-                TotalUsuarios = await _context.Usuarios.CountAsync(),
-                TotalConversaciones = await _context.ChatSessions.CountAsync(),
+                TotalTemas = await _context.CategoriasConocimiento.CountAsync(),
+                TotalPreguntas = await _context.PreguntasConocimiento.CountAsync(),
                 MensajesHoy = await _context.Mensajes
                     .Where(m => m.Fecha.Date == DateTime.UtcNow.Date)
-                    .CountAsync(),
-                UsuariosAdmin = await _context.Usuarios
-                    .Where(u => u.Rol == "Admin")
                     .CountAsync()
             };
 
