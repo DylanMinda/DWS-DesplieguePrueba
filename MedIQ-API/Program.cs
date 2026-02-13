@@ -53,7 +53,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<AppDbContext>();
-        context.Database.EnsureCreated(); // Crea la base de datos si no existe
+        context.Database.Migrate(); // Aplica las migraciones pendientes (Mejor que EnsureCreated)
         Console.WriteLine("Migraciones aplicadas correctamente.");
     }
     catch (Exception ex)
