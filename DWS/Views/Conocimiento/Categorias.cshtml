@@ -187,6 +187,9 @@
                          @(cat.Preguntas?.Count() ?? 0) preguntas guardadas
                     </span>
                     <div style="display: flex; gap: 12px;">
+                        <button type="button" class="btn-action btn-view" style="background: var(--blue-500); border:none; cursor:pointer;" onclick="openEditModal(@cat.Id, '@cat.Nombre', '@cat.Icono', `@cat.Descripcion`)">
+                            <i class="fas fa-edit"></i>
+                        </button>
                         <a asp-action="Preguntas" asp-route-categoriaId="@cat.Id" class="btn-action btn-view">
                             <i class="fas fa-list-ul"></i> Ver Q&A
                         </a>
@@ -267,10 +270,78 @@
 <script>
     function selectIcon(el, iconClass) {
         // Remover clase selected de otros
-        document.querySelectorAll('.icon-option').forEach(opt => opt.classList.remove('selected'));
+        document.querySelectorAll('#modalCreate .icon-option').forEach(opt => opt.classList.remove('selected'));
         // Añadir a este
         el.classList.add('selected');
         // Actualizar el input hidden
         document.getElementById('selectedIcon').value = iconClass;
     }
+
+    function selectEditIcon(el, iconClass) {
+        document.querySelectorAll('#modalEdit .icon-option').forEach(opt => opt.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('selectedEditIcon').value = iconClass;
+    }
+
+    function openEditModal(id, nombre, icono, descripcion) {
+        document.getElementById('editId').value = id;
+        document.getElementById('editNombre').value = nombre;
+        document.getElementById('editDescripcion').value = descripcion;
+        document.getElementById('selectedEditIcon').value = icono;
+        
+        // Reset selection
+        document.querySelectorAll('#modalEdit .icon-option').forEach(opt => opt.classList.remove('selected'));
+        
+        // Select current icon
+        const iconOpt = Array.from(document.querySelectorAll('#modalEdit .icon-option')).find(opt => opt.querySelector('i').className.includes(icono));
+        if (iconOpt) iconOpt.classList.add('selected');
+
+        document.getElementById('modalEdit').style.display = 'flex';
+    }
 </script>
+
+<!-- Modal Editar -->
+<div id="modalEdit" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.75); z-index:2000; align-items:center; justify-content:center; backdrop-filter: blur(4px);">
+    <div class="fade-in-up" style="background:white; padding:40px; border-radius:24px; width:100%; max-width:550px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+        <h3 style="font-size: 1.5rem; margin-bottom: 25px; color: #1e293b;">✏️ Editar Tema Médico</h3>
+        <form asp-action="EditCategoria" method="post" id="editForm">
+            <input type="hidden" name="Id" id="editId" />
+            
+            <div style="margin-bottom:20px;">
+                <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 8px;">Nombre del Tema</label>
+                <input name="Nombre" id="editNombre" class="form-control" required style="width:100%; padding:12px; border:1.5px solid #e2e8f0; border-radius:12px; outline: none; transition: border-color 0.2s;" />
+            </div>
+
+            <div style="margin-bottom:20px;">
+                <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 8px;">Elige un Icono</label>
+                <input type="hidden" name="Icono" id="selectedEditIcon" />
+                <div class="icon-picker">
+                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-pills')"><i class="fas fa-pills"></i></div>
+                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-capsules')"><i class="fas fa-capsules"></i></div>
+                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-heartbeat')"><i class="fas fa-heartbeat"></i></div>
+                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-stethoscope')"><i class="fas fa-stethoscope"></i></div>
+                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-vial')"><i class="fas fa-vial"></i></div>
+                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-dna')"><i class="fas fa-dna"></i></div>
+                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-microscope')"><i class="fas fa-microscope"></i></div>
+                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-user-md')"><i class="fas fa-user-md"></i></div>
+                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-hospital')"><i class="fas fa-hospital"></i></div>
+                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-first-aid')"><i class="fas fa-first-aid"></i></div>
+                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-book-medical')"><i class="fas fa-book-medical"></i></div>
+                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-notes-medical')"><i class="fas fa-notes-medical"></i></div>
+                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-thermometer-half')"><i class="fas fa-thermometer-half"></i></div>
+                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-syringe')"><i class="fas fa-syringe"></i></div>
+                </div>
+            </div>
+
+            <div style="margin-bottom:30px;">
+                <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 8px;">Descripción breve</label>
+                <textarea name="Descripcion" id="editDescripcion" class="form-control" style="width:100%; height:100px; padding:12px; border:1.5px solid #e2e8f0; border-radius:12px; outline: none;"></textarea>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:12px;">
+                <button type="button" onclick="document.getElementById('modalEdit').style.display='none'" style="padding: 12px 25px; border-radius: 12px; border: 1px solid #e2e8f0; background: #f8fafc; color: #64748b; cursor: pointer; font-weight: 600;">Cancelar</button>
+                <button type="submit" style="padding: 12px 30px; border-radius: 12px; border: none; background: var(--blue-600); color: white; cursor: pointer; font-weight: 600;">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>

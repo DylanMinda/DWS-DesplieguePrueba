@@ -197,6 +197,29 @@ namespace DWS.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> EditCategoria(int Id, string Nombre, string Icono, string Descripcion)
+        {
+            var categoria = await _context.CategoriasConocimiento.FindAsync(Id);
+            if (categoria == null)
+            {
+                return NotFound();
+            }
+
+            if (string.IsNullOrEmpty(Nombre))
+            {
+                TempData["Error"] = "El nombre de la categoría es obligatorio.";
+                return RedirectToAction(nameof(Categorias));
+            }
+
+            categoria.Nombre = Nombre;
+            categoria.Icono = Icono ?? "";
+            categoria.Descripcion = Descripcion ?? "";
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Categorias));
+        }
+
+        [HttpPost]
         public async Task<IActionResult> DeleteCategoria(int id)
         {
             var categoria = await _context.CategoriasConocimiento.FindAsync(id);
