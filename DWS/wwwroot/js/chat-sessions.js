@@ -129,6 +129,15 @@ async function switchSession(sessionId) {
                     console.log('➕ Agregando mensaje:', msg.texto.substring(0, 50) + '...');
                     appendMessage(msg.texto, msg.esIA ? 'bot' : 'user', msg.imagenUrl);
                 });
+
+                // NUEVO: Mostrar bienvenida y menú al final, como pidió el usuario
+                // Esto es solo visual, no se guarda en la base de datos
+                if (typeof chatbotConfig !== 'undefined' && chatbotConfig.bienvenida) {
+                    appendMessage(chatbotConfig.bienvenida, 'bot');
+                }
+                if (typeof showMainMenu === 'function') {
+                    showMainMenu();
+                }
             }
             console.log('✅ Mensajes cargados exitosamente');
         } else {

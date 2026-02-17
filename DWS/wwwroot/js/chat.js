@@ -242,6 +242,134 @@ function isMedicalQuery(text) {
     });
 }
 
+// NUEVO: Detectar si es una ALERTA de seguridad (Riesgo o Diagnóstico)
+// Esto debe coincidir con las listas del ChatController.cs para ser consistente
+function isSafetyAlert(text) {
+    const lowerText = text.toLowerCase();
+
+    // Palabras de RIESGO (ChatController.DetectarRiesgo)
+    const riskKeywords = [
+        "tomé demasiado", "tome demasiado", "sobredosis",
+        "mezclar", "sin receta", "duele mucho", "suicidio", "morir", "abortar",
+        "hacerme daño", "cortarme", "autolesión", "cutting", "no quiero vivir",
+        "no aguanto más", "no puedo más", "quiero morir", "quiero dejar de vivir",
+        "aborto casero", "métodos naturales para abortar", "abortar en casa",
+        "abortar sin dolor", "abortar sin riesgos", "abortar sin complicaciones",
+        "pastillas con alcohol", "combinar drogas", "mezcla letal", "convulsiones",
+        "desmayo", "perder el conocimiento", "no respiro", "no puedo respirar",
+        "dolor insoportable", "hemorragia", "sangrado abundante", "aborto", "muerte", "Morir",
+        "morir", "suicidio", "suicidarme", "quitarme la vida", "quiero morir",
+        "quiero dejar de vivir", "no quiero vivir", "no aguanto más",
+        "no puedo más", "me quiero matar", "matarme",
+        "hacerme daño", "lastimarme", "autolesión", "autolesion",
+        "cortarme", "cutting", "ahorcarme", "ahogarme",
+        "tirarme", "lanzarme", "pastillas para morir",
+        "cómo morir sin dolor", "formas de suicidio",
+        "me quiero desaparecer", "no valgo nada",
+        "mi vida no tiene sentido", "nadie me necesita",
+        "estoy cansado de vivir", "quisiera no despertar",
+        "ojalá me muriera", "prefiero estar muerto", "sobredosis", "tomé demasiado", "tome demasiado",
+        "me pasé de dosis", "me pase de dosis",
+        "mezclar medicamentos", "mezclar pastillas",
+        "mezclar drogas", "mezcla letal",
+        "combinar con alcohol", "pastillas con alcohol",
+        "mezclar ibuprofeno y", "mezclar paracetamol y",
+        "exceso de medicamento", "demasiadas pastillas",
+        "intoxicación", "me intoxiqué",
+        "envenenamiento", "me envenené",
+        "qué pasa si tomo mucho",
+        "cuánto es dosis mortal",
+        "puedo morir si tomo",
+        "tomar el doble de dosis",
+        "tomé más de lo indicado", "no respiro", "no puedo respirar",
+        "me falta el aire", "me estoy ahogando",
+        "dolor en el pecho", "opresión en el pecho",
+        "convulsiones", "convulsionando",
+        "desmayo", "perder el conocimiento",
+        "inconsciente", "no reacciona",
+        "hemorragia", "sangrado abundante",
+        "sangro mucho", "vomito sangre",
+        "heces negras", "rigidez en el cuello",
+        "fiebre muy alta", "40 grados",
+        "dolor insoportable",
+        "hinchazón en la cara",
+        "reacción alérgica fuerte",
+        "shock", "anafilaxia",
+        "parálisis", "no puedo mover",
+        "confusión severa", "aborto casero", "abortar en casa",
+        "cómo abortar sin médico",
+        "métodos naturales para abortar",
+        "pastillas abortivas sin receta",
+        "abortar sin riesgos",
+        "abortar sin dolor",
+        "provocar aborto",
+        "interrumpir embarazo en casa",
+        "cómo perder el embarazo",
+        "remedios para abortar",
+        "hierbas para abortar",
+        "golpear el vientre", "sin receta", "automedicarme",
+        "qué antibiótico tomar",
+        "antibiótico fuerte sin receta",
+        "aumentar dosis",
+        "doble dosis",
+        "cada cuánto puedo tomar más",
+        "puedo tomarlo diario",
+        "me sobró medicamento",
+        "medicina vencida",
+    ];
+
+    // Palabras de DIAGNÓSTICO (ChatController.DetectarDiagnostico)
+    const diagKeywords = [
+        "tengo", "me duele", "siento", "padezco", "sufro de",
+        "diagnostícame", "qué tengo", "que tengo", "estoy enfermo",
+        "me diagnosticas", "crees que tengo", "será que tengo",
+        "tengo síntomas de", "creo que tengo", "me salió", "qué tengo", "que tengo",
+        "diagnostícame", "diagnosticame",
+        "me diagnosticas", "puedes decirme qué tengo",
+        "crees que tengo", "será que tengo",
+        "tengo síntomas de",
+        "creo que tengo",
+        "qué enfermedad tengo",
+        "es cáncer", "es covid",
+        "es gripe o algo peor",
+        "es grave",
+        "me estoy muriendo",
+        "es algo serio",
+        "puede ser mortal",
+        "es infección",
+        "qué enfermedad puede ser", "tengo", "me duele", "siento",
+        "padezco", "sufro de",
+        "me arde", "me pica",
+        "me salió", "me apareció",
+        "tengo dolor", "tengo fiebre",
+        "tengo tos", "tengo náuseas",
+        "tengo mareos", "tengo vómitos",
+        "tengo diarrea", "tengo estreñimiento",
+        "tengo ansiedad", "tengo depresión",
+        "me late fuerte el corazón",
+        "me duele el pecho",
+        "me duele la cabeza",
+        "me duele el estómago",
+        "me duele la garganta",
+        "estoy enfermo", "estoy enferma",
+        "me siento mal",
+        "me siento débil",
+        "estoy cansado todo el tiempo", "para drogarme",
+        "colocarme",
+        "ponerme high",
+        "efecto fuerte",
+        "más potente",
+        "sentir algo más fuerte",
+        "aumentar efecto",
+        "cómo potenciar",
+        "triturar pastilla",
+        "inyectar medicamento",
+        "aspirar pastilla"
+    ];
+
+    return riskKeywords.some(k => lowerText.includes(k)) || diagKeywords.some(k => lowerText.includes(k));
+}
+
 // Variables globales para manejo de consultas pendientes de IA
 let pendingMessage = null;
 let pendingImage = null;
@@ -273,6 +401,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const loadingIndicator = document.getElementById('loadingIndicator');
 
     // La inicialización ahora la controla chat-sessions.js llamando a startChatbotFlow()
+    // FIX: Cargar el menú siempre al inicio para que esté disponible si el usuario hace clic en "Menú"
+    loadDynamicMenu();
 
     window.handleSend = async function () {
         const message = messageInput.value.trim();
@@ -306,6 +436,13 @@ document.addEventListener('DOMContentLoaded', function () {
         // 3. Selección de Detalle Inteligente
         pendingMessage = message;
         pendingImage = imageFile;
+
+        // *** NUEVO: Bypass de Seguridad ***
+        // Si detectamos palabras de alerta, NO preguntamos detalles y enviamos directo.
+        if (isSafetyAlert(message)) {
+            processIA(true); // Enviamos como "corta" (aunque el backend la bloqueará igual)
+            return;
+        }
 
         if (imageFile || isMedicalQuery(message)) {
             // Si parece médico, preguntamos el nivel de detalle
