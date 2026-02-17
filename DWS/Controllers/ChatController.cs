@@ -78,6 +78,19 @@ namespace DWS.Controllers
                 alerta = DetectarDiagnostico(chatInput);
             }
 
+            // *** FIX DE SEGURIDAD ***
+            // Si se detectó alguna alerta (Riesgo o Diagnóstico), CORTAMOS la ejecución aquí.
+            // No contactamos a n8n para evitar respuestas contradictorias o peligrosas.
+            if (alerta != null)
+            {
+                return Json(new { 
+                    texto = "", // No hay respuesta de IA
+                    esIA = false, 
+                    alerta = alerta, 
+                    imagenUrl = (string?)null // No guardamos imagen en este caso para simplificar
+                });
+            }
+
             // Procesa la imagen si existe
             string? imagenPathUrl = null;
             if (image != null && image.Length > 0)
