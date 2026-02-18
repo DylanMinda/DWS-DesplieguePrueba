@@ -37,9 +37,9 @@ namespace DWS.Controllers
             await _context.SaveChangesAsync();
 
             // 1. CREAR CATEGORÍAS
-            var catMed = new ConocimientoCategoria { Nombre = "Uso de Medicamentos", Icono = "fas fa-pills", Descripcion = "Guía de Medicación y Uso Responsable." };
-            var catRes = new ConocimientoCategoria { Nombre = "Antibióticos y Bacterias", Icono = "fas fa-shield-virus", Descripcion = "Peligros de la Resistencia a los Antibióticos." };
-            var catMit = new ConocimientoCategoria { Nombre = "Mitos sobre la Salud", Icono = "fas fa-balance-scale", Descripcion = "Mitos, Realidades y Precauciones." };
+            var catMed = new ConocimientoCategoria { Nombre = "Guía de Medicación", Icono = "💊", Descripcion = "Educación sobre el uso responsable y riesgos de la automedicación." };
+            var catRes = new ConocimientoCategoria { Nombre = "Resistencia Antibiótica", Icono = "🛡️", Descripcion = "Información educativa sobre el peligro de la resistencia bacteriana." };
+            var catMit = new ConocimientoCategoria { Nombre = "Mitos y Realidades", Icono = "⚖️", Descripcion = "Desmintiendo creencias comunes para fomentar el cuidado profesional." };
 
             _context.CategoriasConocimiento.AddRange(catMed, catRes, catMit);
             await _context.SaveChangesAsync();

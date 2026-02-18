@@ -97,10 +97,6 @@
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-.chat-btn.whatsapp {
-    background-color: #25d366;
-    color: white;
-}
 
 .chat-btn.telegram {
     background-color: #0088cc;

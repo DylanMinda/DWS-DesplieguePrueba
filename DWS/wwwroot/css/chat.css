@@ -260,16 +260,34 @@
 @media (max-width: 768px) {
     .chat-layout {
         flex-direction: column;
-        height: auto;
+        height: 100vh;
+        margin: 0;
+        border-radius: 0;
     }
 
     .chat-sidebar {
-        width: 100%;
-        max-height: 200px;
+        display: none; /* Hide sidebar on mobile to save space */
+    }
+
+    .chat-header-info h2 {
+        font-size: 1.1rem;
+    }
+
+    .header-menu-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
     }
 
     .message {
-        max-width: 85%;
+        max-width: 90%;
+    }
+
+    .chat-messages {
+        padding: 15px;
+    }
+
+    .chat-input-container {
+        padding: 10px;
     }
 }
 

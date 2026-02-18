@@ -176,7 +176,18 @@
             <div class="knowledge-card">
                 <div class="card-content">
                     <div class="card-icon">
-                        <i class="@(string.IsNullOrEmpty(cat.Icono) ? "fas fa-folder" : cat.Icono)"></i>
+                        @if (string.IsNullOrEmpty(cat.Icono))
+                        {
+                            <i class="fas fa-folder"></i>
+                        }
+                        else if (!cat.Icono.StartsWith("fa"))
+                        {
+                            <span>@cat.Icono</span>
+                        }
+                        else
+                        {
+                            <i class="@cat.Icono"></i>
+                        }
                     </div>
                     <h3>@cat.Nombre</h3>
                     <p>@cat.Descripcion</p>
@@ -217,23 +228,18 @@
 
             <div style="margin-bottom:20px;">
                 <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 8px;">Elige un Icono</label>
-                <input type="hidden" name="Icono" id="selectedIcon" value="fas fa-pills" />
+                <input type="hidden" name="Icono" id="selectedIcon" value="💊" />
                 <div class="icon-picker">
-                    <div class="icon-option selected" onclick="selectIcon(this, 'fas fa-pills')"><i class="fas fa-pills"></i></div>
-                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-capsules')"><i class="fas fa-capsules"></i></div>
-                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-heartbeat')"><i class="fas fa-heartbeat"></i></div>
-                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-stethoscope')"><i class="fas fa-stethoscope"></i></div>
-                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-vial')"><i class="fas fa-vial"></i></div>
-                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-dna')"><i class="fas fa-dna"></i></div>
-                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-microscope')"><i class="fas fa-microscope"></i></div>
-                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-user-md')"><i class="fas fa-user-md"></i></div>
-                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-hospital')"><i class="fas fa-hospital"></i></div>
-                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-first-aid')"><i class="fas fa-first-aid"></i></div>
-                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-book-medical')"><i class="fas fa-book-medical"></i></div>
-                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-notes-medical')"><i class="fas fa-notes-medical"></i></div>
-                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-thermometer-half')"><i class="fas fa-thermometer-half"></i></div>
-                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-syringe')"><i class="fas fa-syringe"></i></div>
+                    <div class="icon-option selected" onclick="selectIcon(this, '💊')">💊</div>
+                    <div class="icon-option" onclick="selectIcon(this, '🛡️')">🛡️</div>
+                    <div class="icon-option" onclick="selectIcon(this, '⚖️')">⚖️</div>
+                    <div class="icon-option" onclick="selectIcon(this, '🩺')">🩺</div>
+                    <div class="icon-option" onclick="selectIcon(this, '🧠')">🧠</div>
+                    <div class="icon-option" onclick="selectIcon(this, '🧪')">🧪</div>
+                    <div class="icon-option" onclick="selectIcon(this, '✨')">✨</div>
                     <div class="icon-option" onclick="selectIcon(this, 'fas fa-pills')"><i class="fas fa-pills"></i></div>
+                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-capsules')"><i class="fas fa-capsules"></i></div>
+                    <div class="icon-option" onclick="selectIcon(this, 'fas fa-stethoscope')"><i class="fas fa-stethoscope"></i></div>
                 </div>
             </div>
 
@@ -293,7 +299,13 @@
         document.querySelectorAll('#modalEdit .icon-option').forEach(opt => opt.classList.remove('selected'));
         
         // Select current icon
-        const iconOpt = Array.from(document.querySelectorAll('#modalEdit .icon-option')).find(opt => opt.querySelector('i').className.includes(icono));
+        const iconOpt = Array.from(document.querySelectorAll('#modalEdit .icon-option')).find(opt => {
+            if (icono.startsWith('fa')) {
+                const i = opt.querySelector('i');
+                return i && i.className.includes(icono);
+            }
+            return opt.textContent.trim() === icono;
+        });
         if (iconOpt) iconOpt.classList.add('selected');
 
         document.getElementById('modalEdit').style.display = 'flex';
@@ -316,20 +328,16 @@
                 <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 8px;">Elige un Icono</label>
                 <input type="hidden" name="Icono" id="selectedEditIcon" />
                 <div class="icon-picker">
+                    <div class="icon-option" onclick="selectEditIcon(this, '💊')">💊</div>
+                    <div class="icon-option" onclick="selectEditIcon(this, '🛡️')">🛡️</div>
+                    <div class="icon-option" onclick="selectEditIcon(this, '⚖️')">⚖️</div>
+                    <div class="icon-option" onclick="selectEditIcon(this, '🩺')">🩺</div>
+                    <div class="icon-option" onclick="selectEditIcon(this, '🧠')">🧠</div>
+                    <div class="icon-option" onclick="selectEditIcon(this, '🧪')">🧪</div>
+                    <div class="icon-option" onclick="selectEditIcon(this, '✨')">✨</div>
                     <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-pills')"><i class="fas fa-pills"></i></div>
                     <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-capsules')"><i class="fas fa-capsules"></i></div>
-                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-heartbeat')"><i class="fas fa-heartbeat"></i></div>
                     <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-stethoscope')"><i class="fas fa-stethoscope"></i></div>
-                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-vial')"><i class="fas fa-vial"></i></div>
-                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-dna')"><i class="fas fa-dna"></i></div>
-                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-microscope')"><i class="fas fa-microscope"></i></div>
-                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-user-md')"><i class="fas fa-user-md"></i></div>
-                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-hospital')"><i class="fas fa-hospital"></i></div>
-                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-first-aid')"><i class="fas fa-first-aid"></i></div>
-                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-book-medical')"><i class="fas fa-book-medical"></i></div>
-                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-notes-medical')"><i class="fas fa-notes-medical"></i></div>
-                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-thermometer-half')"><i class="fas fa-thermometer-half"></i></div>
-                    <div class="icon-option" onclick="selectEditIcon(this, 'fas fa-syringe')"><i class="fas fa-syringe"></i></div>
                 </div>
             </div>
 

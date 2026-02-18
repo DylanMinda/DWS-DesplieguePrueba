@@ -310,11 +310,6 @@ namespace DWS.Controllers
             return null;
         }
 
-        public IActionResult ProcesarImagen(string archivo)
-        {
-            ViewBag.NombreArchivo = archivo;
-            return View(); // Debes crear la vista ProcesarImagen.cshtml
-        }
 
         // ========== CONVERSATION HISTORY ENDPOINTS ==========
 
