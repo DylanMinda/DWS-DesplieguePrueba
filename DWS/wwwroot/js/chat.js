@@ -97,7 +97,14 @@ function showMainMenu() {
         `;
     } else {
         chatbotConfig.menu.forEach(item => {
-            const iconHtml = item.icono ? `<i class="${item.icono}" style="margin-right: 8px;"></i>` : "";
+            let iconHtml = "";
+            if (item.icono) {
+                if (item.icono.startsWith('fa')) {
+                    iconHtml = `<i class="${item.icono}" style="margin-right: 8px;"></i>`;
+                } else {
+                    iconHtml = `<span style="margin-right: 8px;">${item.icono}</span>`;
+                }
+            }
             menuHtml += `<button class="menu-btn" onclick="showSubMenu('${item.id}')">${iconHtml}${item.titulo}</button>`;
         });
     }
